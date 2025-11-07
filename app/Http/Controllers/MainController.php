@@ -64,6 +64,7 @@ class MainController extends Controller
                     'required',
                     'numeric',
                     'digits:10',
+                    'unique:users,phoneno',
                 ],
                 "email" => [
                     'required',
@@ -122,9 +123,7 @@ class MainController extends Controller
             $user->password = Hash::make($request->password);
             $user->save();
 
-            Auth::login($user);
-
-            return redirect()->route('user.Dashboard');
+            return redirect()->route('login');
         }
         return view("registration");
     }

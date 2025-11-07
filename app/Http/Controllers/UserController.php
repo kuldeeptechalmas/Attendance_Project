@@ -17,9 +17,24 @@ class UserController extends Controller
     // Dashbord
     public function User_Dashboard(Request $request)
     {
-        $User_Attendance_All = Attendance::where("user_id", Auth::user()->id)->get();
+        $User_Attendance_All = Attendance::with('checkinoutdataget')
+            ->where("date", now()->toDateString())
+            ->where("user_id", Auth::user()->id)
+            ->get();
 
         return view("UserPanel.userindex", ['dashboard' => 'yes', 'attendance' => $User_Attendance_All]);
+    }
+
+    // HR Get Employees List
+    public function HR_get_Employee_Data(Request $request)
+    {
+        $Get_all_Employee = User::where('roles', 'Employee')->get();
+        return view("UserPanel.hrgetemployee", ['employeedata' => $Get_all_Employee]);
+    }
+
+    public function HR_get_Employee_Data_id($id, Request $request)
+    {
+        dd($id);
     }
 
     // Profile User
@@ -35,6 +50,7 @@ class UserController extends Controller
                     'required',
                     'numeric',
                     'digits:10',
+                    Rule::unique("users", 'phoneno')->ignore(Auth::user()->id),
                 ],
                 "email" => [
                     'required',
@@ -55,6 +71,11 @@ class UserController extends Controller
 
                 "roles.required" => "Enter Roles is Required",
                 "joinindate.required" => "Enter Join in Date is Required",
+
+                "phoneno.required" => "Enter Phone No is Required",
+                "phoneno.numeric" => "Enter Only Number is Required",
+                "phoneno.digits" => "Enter 10 Digit Phone No is Required",
+                "phoneno.unique" => "Enter Phone No has Already Been Taken.",
 
                 "salary.required" => "Enter Salary is Required",
                 "salary.numeric" => "Enter Only Number is Required",
@@ -84,6 +105,7 @@ class UserController extends Controller
     public function User_Logout(Request $request)
     {
         Auth::logout();
+        Session::forget("checkin");
         return redirect()->route("login");
     }
 }

@@ -11,11 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attendance', function (Blueprint $table) {
+        Schema::create('checkinout', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger("user_id");
-            $table->foreign("user_id")->references("id")->on('users');
-            $table->date("date");
+            $table->time("check_in_time")->default(null);
+            $table->time("check_out_time")->default(null);
+            $table->bigInteger("attandance_id");
+            $table->foreign("attandance_id")->references("id")->on("attendance");
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attendance');
+        Schema::dropIfExists('checkinout');
     }
 };

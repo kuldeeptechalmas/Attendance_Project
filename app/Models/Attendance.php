@@ -12,8 +12,11 @@ class Attendance extends Model
     protected $table = "attendance";
     protected $fillable = [
         "user_id",
-        "check_in_time",
-        "check_out_time",
         "date",
     ];
+
+    public function checkinoutdataget()
+    {
+        return $this->hasMany(CheckInOut::class, 'attandance_id', 'id');
+    }
 }

@@ -7,6 +7,7 @@ use Carbon\Carbon;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>TechSoft</title>
@@ -61,10 +62,10 @@ use Carbon\Carbon;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 70px;
             background-color: white;
             width: 98%;
             margin-top: 27px;
+            padding-top: 20px;
         }
 
     </style>
@@ -78,12 +79,15 @@ use Carbon\Carbon;
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @if (Auth::user()->roles=='HR')
+
                     <li class="nav-item">
-                        <a class="nav-link active">Home</a>
+                        <a href="{{ route('hrget.employee.data') }}" class="nav-link active">Employees</a>
                     </li>
-                    <li class="nav-item">
+                    @endif
+                    {{-- <li class="nav-item">
                         <a class="nav-link active">Link</a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <form class="d-flex" role="search">
                     <div class="profilediv">
@@ -125,8 +129,8 @@ use Carbon\Carbon;
     </nav>
 
     <div class="row mt-3">
-        <div class="col-3 bg-white">
-            <h5 class="mx-3">
+        <div class="col-3 bg-white" style="height: 435px;">
+            <h5 style="margin: 20px 14px 0px 66px;">
                 Hi, 👋 <br>
                 Welcome To <br>
                 {{ Auth::user()->roles }} <br>
@@ -188,17 +192,53 @@ use Carbon\Carbon;
                     </div>
                     <div class="col-4">
                         @php
-
-                        $time1 = Carbon::parse($item->check_in_time);
-                        $time2 = Carbon::parse($item->check_out_time);
-                        $diffrence = $time1->diff($time2);
+                        $totalHover = 0;
+                        $totalMinute = 0;
                         @endphp
-                        {{$diffrence->h }}:{{ $diffrence->i }}:{{ $diffrence->s }}
+                        @foreach ($item->checkinoutdataget as $check)
+                        @if ($check->check_out_time!='00:00:00')
+
+                        @php
+
+                        $time1 = Carbon::parse($check->check_in_time);
+                        $time2 = Carbon::parse($check->check_out_time);
+                        $diffrence = $time1->diff($time2);
+                        $totalHover+=$diffrence->h;
+                        $totalMinute+=$diffrence->i;
+
+                        @endphp
+
+                        @endif
+                        @endforeach
+                        @php
+                        if($totalMinute>=60)
+                        {
+                        $totalHover+=1;
+                        $totalMinute-=60;
+                        }
+                        @endphp
+                        <div id="changetime">
+                            {{$totalHover }}:{{ $totalMinute }}
+                        </div>
                     </div>
                     <div class="col-4" style="display: flex;justify-content: end;padding-right: 34px;">
                         <i class="fa-solid fa-ellipsis-vertical"></i>
                     </div>
+                    <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
+                        TimeSheet Date <br>
+                        @foreach ($item->checkinoutdataget as $check)
+                        <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+                        <input style="margin: 14px 12px 10px 12px;" onchange="checkintimes(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
+                        <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
+                        <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimes(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
+                        <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+                        <a href="/Check-Delete/{{ $check->id }}" style="text-decoration: none;color:red">
+                            <i class="fa-solid fa-trash" style="margin-left: 312px;"></i>
+                        </a>
+                        <br>
+                        @endforeach
 
+                    </div>
                 </div>
                 @endforeach
             </div>
@@ -210,5 +250,60 @@ use Carbon\Carbon;
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        function checkintimes(e) {
+            console.log($(e).val());
+            console.log($($(e).next()[0]).val());
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+                , type: "post"
+                , url: "{{ route('checkin.time.change') }}"
+                , data: {
+                    checkinid: $($(e).next()[0]).val()
+                    , checkintime: $(e).val()
+                    , attendanceid: $($(e).prev()[0]).val()
+                }
+                , success: function(res) {
+                    console.log(res['hover']);
+                    console.log(res['minute']);
+
+                    $("#changetime").html(res['hover'] + ":" + res['minute'])
+                }
+                , error: function() {
+
+                }
+            });
+        }
+
+        function checkouttimes(e) {
+            console.log($(e).val());
+            console.log($($(e).prev()[0]).val());
+
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                }
+                , type: "post"
+                , url: "{{ route('checkout.time.change') }}"
+                , data: {
+                    checkinid: $($(e).prev()[0]).val()
+                    , checkouttime: $(e).val()
+                    , attendanceid: $($(e).next()[0]).val()
+                }
+                , success: function(res) {
+                    console.log(res['hover']);
+                    console.log(res['minute']);
+                    $("#changetime").html(res['hover'] + ":" + res['minute'])
+                }
+                , error: function() {
+
+                }
+            });
+        }
+
+    </script>
 </body>
 </html>

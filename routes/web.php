@@ -34,4 +34,13 @@ Route::middleware('UserAuthCheck')->group(function () {
     // Attendance Route
     Route::match(['get', 'post'], '/Attendance-CheckIn', [AttendanceController::class, "Attendance_Check_IN"])->name('attendance.checkin');
     Route::match(['get', 'post'], '/Attendance-CheckOut', [AttendanceController::class, "Attendance_Check_OUT"])->name('attendance.checkout');
+
+    // Change Chack IN and Chack OUT Time
+    Route::match(['get', 'post'], '/CheckIn-Time-Change', [AttendanceController::class, 'Check_IN_Time_Change'])->name('checkin.time.change');
+    Route::match(['get', 'post'], '/CheckOut-Time-Change', [AttendanceController::class, 'Check_OUT_Time_Change'])->name('checkout.time.change');
+    Route::match(['get', 'post'], '/Check-Delete/{checkid}', [AttendanceController::class, 'Check_Data_Delete'])->name('check.data.delete');
+
+    // HR Routes
+    Route::match(['get', 'post'], '/Employees', [UserController::class, 'HR_get_Employee_Data'])->name('hrget.employee.data');
+    Route::match(['get', 'post'], '/Employees/{id}', [UserController::class, 'HR_get_Employee_Data_id'])->name('hrget.employee.data.id');
 });
