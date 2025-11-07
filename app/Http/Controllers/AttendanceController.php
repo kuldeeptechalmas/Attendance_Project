@@ -14,10 +14,10 @@ class AttendanceController extends Controller
     {
         $Now_Date = now()->toDateString();
 
-        $Exist_Attendance = Attendance::where("date", $Now_Date)->where("user_id", Auth::user()->id)->first();
-        if (isset($Exist_Attendance)) {
-            dd("boom");
-        }
+        // $Exist_Attendance = Attendance::where("date", $Now_Date)->where("user_id", Auth::user()->id)->first();
+        // if (isset($Exist_Attendance)) {
+        //     dd("boom");
+        // }
 
         $Today = new Attendance();
         $Today->user_id = Auth::user()->id;
