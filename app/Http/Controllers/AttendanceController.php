@@ -14,10 +14,12 @@ class AttendanceController extends Controller
     // Check In
     public function Attendance_Check_IN(Request $request)
     {
-        $Now_Date = now();
+        $Now_Date = now()->toDateString();
 
         $Exist_Attendance = Attendance::where("date", $Now_Date)->where("user_id", Auth::user()->id)->first();
+
         if (isset($Exist_Attendance)) {
+
             $Checkinout = new CheckInOut();
             $Checkinout->check_in_time = now();
             $Checkinout->check_out_time = '';
@@ -62,6 +64,18 @@ class AttendanceController extends Controller
         Session::forget("checkin");
 
         return redirect()->route("user.Dashboard");
+    }
+
+    // Today Attendance Delete
+    public function Today_Attandance_Delete($attendanceid, Request $request)
+    {
+        $Remove_Attandance = Attendance::find($attendanceid);
+        if (isset($Remove_Attandance)) {
+            $Remove_Attandance->delete();
+            return redirect()->back();
+        } else {
+            return redirect()->back()->with("error", "Not Found Data");
+        }
     }
 
     // Check in Time Change - (ajax)

@@ -58,6 +58,7 @@ use Carbon\Carbon;
         }
 
         .attendanceshow {
+            padding-bottom: 16px;
             margin-left: 0px;
             display: flex;
             justify-content: center;
@@ -73,7 +74,9 @@ use Carbon\Carbon;
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg bg-white" style="height: 85px;">
         <div class="container-fluid">
-            <a class="navbar-brand text-primary" href="{{ route('user.Dashboard') }}">TechSoft</a>
+            <a class="navbar-brand text-primary" href="{{ route('user.Dashboard') }}" style="margin-left: 18px;">
+                <img style="height: 42px;" src="{{ asset('images/logo.png') }}" alt="">
+                TechSoft</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -82,7 +85,7 @@ use Carbon\Carbon;
                     @if (Auth::user()->roles=='HR')
 
                     <li class="nav-item">
-                        <a href="{{ route('hrget.employee.data') }}" class="nav-link active">Employees</a>
+                        <a href="{{ route('hrget.employee.data') }}" style="margin-bottom: 7px;" class="nav-link active">Employees</a>
                     </li>
                     @endif
                     {{-- <li class="nav-item">
@@ -130,12 +133,21 @@ use Carbon\Carbon;
 
     <div class="row mt-3">
         <div class="col-3 bg-white" style="height: 435px;">
-            <h5 style="margin: 20px 14px 0px 66px;">
+            <h5 style="margin: 25px;">
                 Hi, 👋 <br>
                 Welcome To <br>
                 {{ Auth::user()->roles }} <br>
             </h5>
-
+            <div style="padding:10px 25px;">
+                <a href="{{ route('month.attendance') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Month Attendance
+                </a>
+            </div>
+            <div style="padding:10px 25px;">
+                <a href="{{ route('teams') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Teams
+                </a>
+            </div>
         </div>
         <div class="col-9">
             @if (isset($dashboard))
@@ -172,11 +184,19 @@ use Carbon\Carbon;
                     </div>
                     <div class="col-6">
                         <div style="display: flex;justify-content: center;">
+                            @if (Session::get('checkin'))
+
                             <a href="{{ route('attendance.checkout') }}" style="text-decoration: none;">
                                 <button class="btn btn-danger" style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
                                     Check Out
                                 </button>
                             </a>
+
+                            @else
+                            <button class="btn btn-danger" style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
+                                Check Out
+                            </button>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -222,7 +242,9 @@ use Carbon\Carbon;
                         </div>
                     </div>
                     <div class="col-4" style="display: flex;justify-content: end;padding-right: 34px;">
-                        <i class="fa-solid fa-ellipsis-vertical"></i>
+                        <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
+                            <span>Remove</span>
+                        </a>
                     </div>
                     <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
                         TimeSheet Date <br>
@@ -232,8 +254,8 @@ use Carbon\Carbon;
                         <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
                         <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimes(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
                         <input type="text" name="" value="{{ $item->id }}" id="" hidden>
-                        <a href="/Check-Delete/{{ $check->id }}" style="text-decoration: none;color:red">
-                            <i class="fa-solid fa-trash" style="margin-left: 312px;"></i>
+                        <a href="/Check-Delete/{{ $check->id }}" style="margin-left: 312px;text-decoration: none;color:red">
+                            <i class="fa-solid fa-trash"></i>
                         </a>
                         <br>
                         @endforeach

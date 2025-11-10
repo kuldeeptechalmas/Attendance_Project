@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rules\Password;
 
@@ -126,5 +129,69 @@ class MainController extends Controller
             return redirect()->route('login');
         }
         return view("registration");
+    }
+
+    // Logout User
+    public function User_Logout(Request $request)
+    {
+        Auth::logout();
+        Session::forget("checkin");
+        return redirect()->route("login");
+    }
+
+    // PDF Employees
+    public function PDF_For_Employee(Request $request)
+    {
+        $mainSalary = Auth::user()->salary;
+        $mainName = Auth::user()->name;
+        $mainPhone = Auth::user()->phoneno;
+
+        if (isset($request->userid)) {
+            $find_Employee = User::find($request->userid);
+            $mainSalary = $find_Employee->salary;
+            $mainName = $find_Employee->name;
+            $mainPhone = $find_Employee->phoneno;
+        }
+        $currentStart = Carbon::createFromDate('2025', $request->month, '1');
+        $currentEnd = $currentStart->copy()->endOfMonth();
+        $totalDay = $currentStart->daysInMonth;
+        $current = $currentStart->copy();
+        while ($current->lte($currentEnd)) {
+            if ($current->isSunday() || $current->isSaturday()) {
+                $weeksInLeave[] = $current->toString();
+            }
+            $current->addDay();
+        }
+        $workingDay = $totalDay - count($weeksInLeave);
+        $workingHours = $workingDay * 8;
+        $salary = 0;
+        if ($workingHours <= $request->hourse) {
+            $salary = $mainSalary;
+        } else {
+            $PerHourse = $mainSalary / $workingHours;
+            $diffHours = $workingHours - $request->hourse;
+            $salary = $mainSalary - ($diffHours * $PerHourse);
+        }
+
+        $data = [
+            "startdate" => $currentStart->toDateString(),
+            "enddate" => $currentEnd->toDateString(),
+            "totalday" => $totalDay,
+            "leavesday" => count($weeksInLeave),
+            "hourse" => $request->hourse,
+            "minutes" => $request->minutes,
+            "workingday" => $workingDay,
+            "salary" => $salary,
+            "name" => $mainName,
+            "phone" => $mainPhone,
+        ];
+
+        if ($request->action == 'view') {
+            $pdf = Pdf::loadView("UserPanel.PDF.pdfshow", ['data' => $data]);
+            return $pdf->stream('EmployeeSlips.pdf');
+        } else {
+            $pdf = Pdf::loadView("UserPanel.PDF.pdfshow", ['data' => $data]);
+            return $pdf->download('EmployeeSlips.pdf');
+        }
     }
 }
