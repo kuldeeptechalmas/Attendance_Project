@@ -10,6 +10,11 @@ use Carbon\Carbon;
     $totalWorkMinute = 0;
     $index=1;
     @endphp
+    {{-- @if (Auth::user()->roles=="HR")
+    <div style="display: flex;justify-content: end;padding-right: 55px;">
+        <input style="width: 18%" type="submit" class="btn btn-primary" value="Add Attendance">
+    </div>
+    @endif --}}
     @foreach ($data as $item)
     <div class="row attendanceshow">
 
@@ -43,9 +48,6 @@ use Carbon\Carbon;
             $totalMinute-=60;
             }
             @endphp
-            <div id="changetime">
-                {{$totalHover }}:{{ $totalMinute }}
-            </div>
             @php
             $index+=1;
             $totalWorkHover+=$totalHover;
@@ -62,7 +64,26 @@ use Carbon\Carbon;
                 <span>Remove</span>
             </a>
         </div>
-
+        @if (Auth::user()->roles=="HR")
+        <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
+            Total Time :
+            <span id="changetime">
+                {{$totalHover }}:{{ $totalMinute }}
+            </span>
+            <br>
+            @foreach ($item->checkinoutdataget as $check)
+            <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+            <input style="margin: 14px 12px 10px 12px;" onchange="checkintimesHR(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
+            <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
+            <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimesHR(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
+            <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+            <a href="/Check-Delete/{{ $check->id }}" style="margin-left: 312px;text-decoration: none;color:red">
+                <i class="fa-solid fa-trash"></i>
+            </a>
+            <br>
+            @endforeach
+        </div>
+        @endif
     </div>
     @endforeach
 
@@ -92,4 +113,59 @@ use Carbon\Carbon;
         </form>
     </div>
 </div>
+<script>
+    function checkintimesHR(e) {
+        console.log($(e).val());
+        console.log($($(e).next()[0]).val());
+
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            , type: "post"
+            , url: "{{ route('checkin.time.change') }}"
+            , data: {
+                checkinid: $($(e).next()[0]).val()
+                , checkintime: $(e).val()
+                , attendanceid: $($(e).prev()[0]).val()
+            }
+            , success: function(res) {
+                console.log(res['hover']);
+                console.log(res['minute']);
+                $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+            }
+            , error: function() {
+
+            }
+        });
+    }
+
+    function checkouttimesHR(e) {
+        console.log($(e).val());
+        console.log($($(e).prev()[0]).val());
+
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            }
+            , type: "post"
+            , url: "{{ route('checkout.time.change') }}"
+            , data: {
+                checkinid: $($(e).prev()[0]).val()
+                , checkouttime: $(e).val()
+                , attendanceid: $($(e).next()[0]).val()
+            }
+            , success: function(res) {
+                console.log(res['hover']);
+                console.log(res['minute']);
+                $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+            }
+            , error: function() {
+
+            }
+        });
+    }
+
+</script>
 @endsection

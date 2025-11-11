@@ -12,6 +12,10 @@ use Carbon\Carbon;
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>TechSoft</title>
     <style>
+        body {
+            overflow-x: hidden;
+        }
+
         .profilediv {
             height: 45px;
             background-color: #2800ff;
@@ -138,6 +142,11 @@ use Carbon\Carbon;
                 Welcome To <br>
                 {{ Auth::user()->roles }} <br>
             </h5>
+            <div style="padding:10px 25px;">
+                <a href="{{ route('user.Dashboard') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Today Attendance
+                </a>
+            </div>
             <div style="padding:10px 25px;">
                 <a href="{{ route('month.attendance') }}" style="font-size: 18px;color: black;text-decoration: none;">
                     Month Attendance

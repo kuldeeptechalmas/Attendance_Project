@@ -43,7 +43,11 @@ class MainController extends Controller
             if (isset($Find_User)) {
                 if (Auth::attempt($request->only("email", "password"))) {
                     Auth::login($Find_User);
-                    return redirect()->route("user.Dashboard");
+                    if ($Find_User->roles == 'Admin' || $Find_User->roles == 'Super Admin') {
+                        return redirect()->route('admin.dashbord');
+                    } else {
+                        return redirect()->route("user.Dashboard");
+                    }
                 } else {
                     return redirect()->back()->withInput()->withErrors(["password" => "Enter Currect Password."]);
                 }
@@ -146,6 +150,7 @@ class MainController extends Controller
         $mainName = Auth::user()->name;
         $mainPhone = Auth::user()->phoneno;
 
+        // HR user
         if (isset($request->userid)) {
             $find_Employee = User::find($request->userid);
             $mainSalary = $find_Employee->salary;
@@ -193,5 +198,23 @@ class MainController extends Controller
             $pdf = Pdf::loadView("UserPanel.PDF.pdfshow", ['data' => $data]);
             return $pdf->download('EmployeeSlips.pdf');
         }
+    }
+
+    // Forget Email Check
+    public function User_Forgot_Email_Check(Request $request)
+    {
+        if ($request->isMethod('post')) {
+            $Find_user = User::where('email', $request->email)->first();
+            if (isset($Find_user)) {
+                return redirect()->route('user.forget.password', ['email' => $request->email]);
+            }
+        }
+        return view('forgetemailcheck');
+    }
+
+    // Forget Password
+    public function User_Forgot_Password(Request $request)
+    {
+        return view('forgetpassword');
     }
 }

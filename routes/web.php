@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\MainController;
 use App\Http\Controllers\UserController;
@@ -22,8 +23,26 @@ Route::redirect('/', '/Login',);
 Route::match(['get', 'post'], "/Login", [MainController::class, 'Login_User'])->name("login");
 Route::match(['get', 'post'], "/Registration", [MainController::class, 'Registration_User'])->name("registration");
 Route::match(['get', 'post'], '/Logout-User', [MainController::class, 'User_Logout'])->name('user.logout');
+Route::match(['get', 'post'], '/Forget-Email-Check', [MainController::class, 'User_Forgot_Email_Check'])->name('user.forget.email.check');
+Route::match(['get', 'post'], '/Forget-Password', [MainController::class, 'User_Forgot_Password'])->name('user.forget.password');
 
 // Admin Route
+Route::middleware('UserAuthCheck')->group(function () {
+
+    Route::match(['get', 'post'], '/Admin-Dashbord', [AdminController::class, 'Admin_Dashborad'])->name('admin.dashbord');
+    Route::match(['get', 'post'], '/Admin-Profile', [AdminController::class, 'Admin_Profile'])->name('admin.profile');
+
+    Route::match(['get', 'post'], '/Admin-Employee', [AdminController::class, 'Admin_Employee_Manage'])->name('admin.employee.manage');
+    Route::match(['get', 'post'], '/Admin-Employee/{id}', [AdminController::class, 'Admin_Find_Employee'])->name('admin.find.employee');
+    Route::match(['get', 'post'], '/Admin-Employee-Modify', [AdminController::class, 'Admin_Modify_Employee'])->name('admin.modify.employee');
+
+    Route::match(['get', 'post'], '/Admin-HR', [AdminController::class, 'Admin_Hr_Manage'])->name('admin.hr.manage');
+    Route::match(['get', 'post'], '/Admin-HR/{id}', [AdminController::class, 'Admin_Find_Hr'])->name('admin.find.hr');
+    Route::match(['get', 'post'], '/Admin-HR-Modify', [AdminController::class, 'Admin_Modify_Hr'])->name('admin.modify.hr');
+
+    Route::match(['get', 'post'], '/Admin-Add', [AdminController::class, 'Admin_Add_Employee_HR'])->name('admin.add');
+});
+
 
 // User Route
 Route::middleware('UserAuthCheck')->group(function () {

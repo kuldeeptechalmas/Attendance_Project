@@ -70,11 +70,19 @@
                 </div>
                 @enderror
 
-                <div class="mb-5">
-                    Don’t have an account? <br>
-                    <a href="{{ route('registration') }}">
-                        Registration
-                    </a>
+                <div class="mb-5" style="display: flex;justify-content: space-between;">
+                    <div>
+                        Don’t have an account? <br>
+                        <a href="{{ route('registration') }}">
+                            Registration
+                        </a>
+                    </div>
+                    <div>
+                        <a href="{{ route('user.forget.email.check') }}">
+
+                            Forgot password?
+                        </a>
+                    </div>
                 </div>
                 <div style="text-align: center;">
                     <button type="submit" class="btn btn-primary w-100">Login</button>
