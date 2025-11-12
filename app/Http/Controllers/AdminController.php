@@ -338,4 +338,25 @@ class AdminController extends Controller
         }
         return view('AdminPanel.addemployeeandhr');
     }
+
+    // Super Admin Manage Admin
+    public function SuperAdmin_Show_Admin(Request $request)
+    {
+        $admin_employee = User::where('roles', 'Admin')->paginate(10);
+        if (isset($admin_employee)) {
+            return view('AdminPanel.adminshow', ['data' => $admin_employee]);
+        } else {
+            return redirect()->back()->with("error", "Not Found Data");
+        }
+    }
+
+    public function SuperAdmin_Find_Admin($adminid, Request $request)
+    {
+        $get_admin = User::find($adminid);
+        if ($get_admin) {
+            return view('AdminPanel.adminmodifydetail', ['admin' => $get_admin]);
+        } else {
+            return redirect()->back()->with('error', 'not found record');
+        }
+    }
 }

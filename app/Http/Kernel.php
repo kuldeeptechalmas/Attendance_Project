@@ -2,6 +2,9 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\AdminAuthCheck;
+use App\Http\Middleware\HRAuthCheck;
+use App\Http\Middleware\SuperAdminAuthCheck;
 use App\Http\Middleware\User_Auth_Check;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -66,5 +69,8 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         "UserAuthCheck" => User_Auth_Check::class,
+        "AdminAuthCheck" => AdminAuthCheck::class,
+        "HRAuthCheck" => HRAuthCheck::class,
+        "SuperAdminAuthCheck" => SuperAdminAuthCheck::class,
     ];
 }

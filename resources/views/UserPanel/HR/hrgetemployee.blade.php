@@ -34,6 +34,14 @@
         </td>
     </tr>
     @endforeach
-    @endif
 </table>
+<div class="row" style="margin: 0px;background: white;padding-top: 20px;margin-bottom: 20px;">
+    <div class="col-5">
+        {{ $employeedata->currentPage() }} of {{ $employeedata->lastPage() }} in {{ $employeedata->count() }}
+    </div>
+    <div class="col-7">
+        {{$employeedata->links('pagination::bootstrap-4') }}
+    </div>
+</div>
+@endif
 @endsection

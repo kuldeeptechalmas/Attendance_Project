@@ -1,0 +1,28 @@
+.loginform {
+            border-radius: 23px;
+            padding: 0px 51px 30px 51px;
+        }
+
+        .logindivlogintext {
+            font-size: 40px;
+            padding-top: 8%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .passwordicon {
+            top: 63%;
+            right: 19px;
+        }
+
+        .loginimage {
+            height: 85%;
+            width: 100%;
+            object-fit: contain;
+        }
+
+        .errordiv {
+            height: 37px;
+            display: flex;
+            align-items: center;
+        }

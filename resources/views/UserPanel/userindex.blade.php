@@ -1,6 +1,3 @@
-@php
-use Carbon\Carbon;
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,70 +7,9 @@ use Carbon\Carbon;
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('css/user/style.css') }}">
     <title>TechSoft</title>
-    <style>
-        body {
-            overflow-x: hidden;
-        }
 
-        .profilediv {
-            height: 45px;
-            background-color: #2800ff;
-            width: 51px;
-            border-radius: 10px;
-            margin-right: 20px;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 21px;
-            position: relative;
-        }
-
-        .profiledivinfo {
-            position: absolute;
-            top: 45px;
-            right: -5px;
-            display: none;
-            border-top: 10px solid white;
-        }
-
-        .profilediv:hover .profiledivinfo {
-            display: block;
-        }
-
-        .profiledivinfo_inner {
-            background: white;
-            border-radius: 22px;
-            box-shadow: 1px 1px 7px black;
-            height: 306px;
-            width: 288px;
-        }
-
-        .floatdivchar {
-            height: 80px;
-            width: 80px;
-            background-color: #2800ff;
-            border-radius: 13px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 30px;
-        }
-
-        .attendanceshow {
-            padding-bottom: 16px;
-            margin-left: 0px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: white;
-            width: 98%;
-            margin-top: 27px;
-            padding-top: 20px;
-        }
-
-    </style>
 </head>
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg bg-white" style="height: 85px;">
@@ -229,8 +165,8 @@ use Carbon\Carbon;
 
                         @php
 
-                        $time1 = Carbon::parse($check->check_in_time);
-                        $time2 = Carbon::parse($check->check_out_time);
+                        $time1 = now()::parse($check->check_in_time);
+                        $time2 = now()::parse($check->check_out_time);
                         $diffrence = $time1->diff($time2);
                         $totalHover+=$diffrence->h;
                         $totalMinute+=$diffrence->i;
@@ -283,8 +219,6 @@ use Carbon\Carbon;
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script>
         function checkintimes(e) {
-            console.log($(e).val());
-            console.log($($(e).next()[0]).val());
 
             $.ajax({
                 headers: {
@@ -298,8 +232,6 @@ use Carbon\Carbon;
                     , attendanceid: $($(e).prev()[0]).val()
                 }
                 , success: function(res) {
-                    console.log(res['hover']);
-                    console.log(res['minute']);
 
                     $("#changetime").html(res['hover'] + ":" + res['minute'])
                 }
@@ -310,8 +242,6 @@ use Carbon\Carbon;
         }
 
         function checkouttimes(e) {
-            console.log($(e).val());
-            console.log($($(e).prev()[0]).val());
 
             $.ajax({
                 headers: {
@@ -325,8 +255,6 @@ use Carbon\Carbon;
                     , attendanceid: $($(e).next()[0]).val()
                 }
                 , success: function(res) {
-                    console.log(res['hover']);
-                    console.log(res['minute']);
                     $("#changetime").html(res['hover'] + ":" + res['minute'])
                 }
                 , error: function() {

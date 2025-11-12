@@ -6,36 +6,15 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('css/user/registration.css') }}">
     <title>Registration</title>
-    <style>
-        .maindiv {
-            margin: 89px 69px 30px 69px;
-            margin-top: 30px;
-        }
 
-        .formregistaration {
-            border-radius: 30px;
-            padding: 30px 50px 0px 50px;
-        }
-
-        .passwordicon {
-            top: 63%;
-            right: 19px;
-        }
-
-        .errordiv {
-            height: 45px;
-            display: flex;
-            align-items: center;
-        }
-
-    </style>
 </head>
 <body class="bg-light maindiv">
     <div class="bg-white card rounded-5">
         <div class="row">
             <div class="col-6">
-                <h5 class="text-center mt-4">Registration</h5>
+                <h5 class="text-center mt-4" style="font-size: 24px;">Registration</h5>
                 <form class="formregistaration" method="post" action="{{ route('registration') }}">
                     @csrf
                     <div class="mb-3">
@@ -174,5 +153,6 @@
         }
 
     </script>
+
 </body>
 </html>

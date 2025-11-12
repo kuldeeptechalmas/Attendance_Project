@@ -54,7 +54,7 @@
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 3px;">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Employee</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete HR</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -76,8 +76,6 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
     function deleteShow(id, email) {
-        console.log(id);
-        console.log(email);
         $("#deletedid").val(id);
         $("#deletedemail").text(email);
     }

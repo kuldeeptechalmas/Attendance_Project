@@ -5,43 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('css/user/forgotemailpassword.css') }}">
     <title>ForgetEmailCheck</title>
-    <style>
-        .loginform {
-            border-radius: 23px;
-            padding: 9px 90px 61px 90px;
-        }
 
-        body {
-            overflow-x: hidden;
-        }
-
-        .logindivlogintext {
-            font-size: 40px;
-            padding-top: 8%;
-            display: flex;
-            margin-bottom: 24px;
-            justify-content: center;
-        }
-
-        .passwordicon {
-            top: 63%;
-            right: 19px;
-        }
-
-        .loginimage {
-            height: 85%;
-            width: 100%;
-            object-fit: contain;
-        }
-
-        .errordiv {
-            height: 37px;
-            display: flex;
-            align-items: center;
-        }
-
-    </style>
 </head>
 <body class="bg-light">
     <div class="row">
@@ -54,13 +20,17 @@
             <form class="bg-white loginform" action="{{ route('user.forget.email.check') }}" method="post">
                 @csrf
                 <div class="logindivlogintext">Check Email</div>
-                <div style="margin-bottom: 47px;">
+                <div style="margin-bottom: 20px;">
                     <label class="form-label">Email Address</label>
                     <input type="text" value="{{ old('email') }}" name="email" class="form-control">
                 </div>
                 @error("email")
                 <div class="alert alert-danger errordiv" role="alert">
                     {{ $message }}
+                </div>
+                @else
+                <div style="margin-bottom: 36px;">
+
                 </div>
                 @enderror
 

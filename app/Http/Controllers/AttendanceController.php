@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\CheckInOut;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -93,8 +92,8 @@ class AttendanceController extends Controller
 
             foreach ($Find_Attendance->checkinoutdataget as $check) {
 
-                $time1 = Carbon::parse($check->check_in_time);
-                $time2 = Carbon::parse($check->check_out_time);
+                $time1 = now()::parse($check->check_in_time);
+                $time2 = now()::parse($check->check_out_time);
                 $diffrence = $time1->diff($time2);
                 $totalHover += $diffrence->h;
                 $totalMinute += $diffrence->i;
@@ -130,8 +129,8 @@ class AttendanceController extends Controller
 
             foreach ($Find_Attendance->checkinoutdataget as $check) {
 
-                $time1 = Carbon::parse($check->check_in_time);
-                $time2 = Carbon::parse($check->check_out_time);
+                $time1 = now()::parse($check->check_in_time);
+                $time2 = now()::parse($check->check_out_time);
                 $diffrence = $time1->diff($time2);
                 $totalHover += $diffrence->h;
                 $totalMinute += $diffrence->i;

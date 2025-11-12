@@ -27,7 +27,13 @@
 @toastifyJs
 
 <div class="bg-white">
-    <h1 style="text-align: center;padding-top: 18px;">Add User</h1>
+    <h1 style="text-align: center;padding-top: 18px;">
+        @if (Auth::user()->roles=='Super Admin')
+        Add Employee/Hr/Admin
+        @else
+        Add Employee/Hr
+        @endif
+    </h1>
     <form class="formregistaration" method="post" action="{{ route('admin.add') }}">
         @csrf
         <input type="text" name="action" value="modify" hidden>
@@ -56,9 +62,12 @@
             <select class="form-select" style="height: 40px;" name="roles" aria-label="Default select example">
                 <option value="">Select</option>
 
-                <option value="HR" {{ old('roles')=='HR'?'selected':'' }}>HR</option>
                 <option value="Employee" {{ old('roles')=='Employee'?'selected':'' }}>Employee</option>
+                <option value="HR" {{ old('roles')=='HR'?'selected':'' }}>HR</option>
 
+                @if (Auth::user()->roles=='Super Admin')
+                <option value="Admin" {{ old('roles')=='Admin'?'selected':'' }}>Admin</option>
+                @endif
             </select>
         </div>
         @error("roles")

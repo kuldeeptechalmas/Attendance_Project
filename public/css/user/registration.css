@@ -1,0 +1,20 @@
+ .maindiv {
+            margin: 89px 69px 30px 69px;
+            margin-top: 30px;
+        }
+
+        .formregistaration {
+            border-radius: 30px;
+            padding: 30px 50px 0px 50px;
+        }
+
+        .passwordicon {
+            top: 63%;
+            right: 19px;
+        }
+
+        .errordiv {
+            height: 45px;
+            display: flex;
+            align-items: center;
+        }

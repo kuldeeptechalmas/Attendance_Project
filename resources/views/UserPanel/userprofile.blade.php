@@ -1,24 +1,6 @@
 @extends('UserPanel.userindex')
 @section('content')
 
-<style>
-    .formregistaration {
-        border-radius: 30px;
-        padding: 20px 198px 0px 198px;
-    }
-
-    .passwordicon {
-        top: 63%;
-        right: 19px;
-    }
-
-    .errordiv {
-        height: 45px;
-        display: flex;
-        align-items: center;
-    }
-
-</style>
 @toastifyCss
 @session('update')
 {{ toastify()->success('Your action was successful!') }}
@@ -54,11 +36,14 @@
             <select class="form-select" style="height: 40px;" name="roles" aria-label="Default select example">
                 <option value="">Select</option>
 
-                @if (Auth::user()->roles=='HR')
+                @if(Auth::user()->email=='superadmin12@gmail.com')
+                <option value="Super Admin" {{ old('roles',Auth::user()->roles)=='Super Admin'?'selected':'' }}>Super Admin</option>
+                <option value="Admin" {{ old('roles',Auth::user()->roles)=='Admin'?'selected':'' }}>Admin</option>
                 <option value="HR" {{ old('roles',Auth::user()->roles)=='HR'?'selected':'' }}>HR</option>
-                @endif
-
-                @if (Auth::user()->roles=='Employee')
+                <option value="Employee" {{ old('roles',Auth::user()->roles)=='Employee'?'selected':'' }}>Employee</option>
+                @elseif (Auth::user()->roles=='HR')
+                <option value="HR" {{ old('roles',Auth::user()->roles)=='HR'?'selected':'' }}>HR</option>
+                @elseif (Auth::user()->roles=='Employee')
                 <option value="Employee" {{ old('roles',Auth::user()->roles)=='Employee'?'selected':'' }}>Employee</option>
                 @endif
 
@@ -89,11 +74,19 @@
             {{ $message }}
         </div>
         @enderror
+        @if (Auth::user()->email=='superadmin12@gmail.com')
 
+        <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input type="text" name="email" readonly value="{{ old('email',Auth::user()->email) }}" class="form-control">
+        </div>
+        @else
         <div class="mb-3">
             <label class="form-label">Email Address</label>
             <input type="text" name="email" value="{{ old('email',Auth::user()->email) }}" class="form-control">
         </div>
+        @endif
+
         @error("email")
         <div class="alert alert-danger errordiv" role="alert">
             {{ $message }}

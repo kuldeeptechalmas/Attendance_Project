@@ -7,37 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <title>Login</title>
-    <style>
-        .loginform {
-            border-radius: 23px;
-            padding: 0px 51px 30px 51px;
-        }
-
-        .logindivlogintext {
-            font-size: 40px;
-            padding-top: 8%;
-            display: flex;
-            justify-content: center;
-        }
-
-        .passwordicon {
-            top: 63%;
-            right: 19px;
-        }
-
-        .loginimage {
-            height: 85%;
-            width: 100%;
-            object-fit: contain;
-        }
-
-        .errordiv {
-            height: 37px;
-            display: flex;
-            align-items: center;
-        }
-
-    </style>
+    <link rel="stylesheet" href="{{ asset('css/user/login.css') }}">
 </head>
 <body class="bg-light">
     <div class="row" style="margin: 11px 54px 0px 87px;">

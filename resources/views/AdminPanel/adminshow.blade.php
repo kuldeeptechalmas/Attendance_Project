@@ -6,9 +6,8 @@
 {{ toastify()->error('Remove Record Successful!') }}
 @endsession
 @toastifyJs
-
 @if ($data->isNotEmpty())
-<h3 style="background: white;text-align: center;">Employees</h3>
+<h3 style="background: white;text-align: center;">Admins</h3>
 <table class="table table-hover">
     <tr>
         <td>Name</td>
@@ -24,7 +23,7 @@
         <td>{{ $item->phoneno }}</td>
         <td>
             <div style="display: flex;">
-                <a href="/Admin-Employee/{{ $item->id }}">
+                <a href="/SuperAdmin-Admin/{{ $item->id }}">
                     <button class="btn btn-primary" style="margin-right: 11px;">Edit</button>
                 </a>
                 <button type="button" class="btn btn-danger" onclick="deleteShow('{{ $item->id }}','{{ $item->email }}')" data-bs-toggle="modal" data-bs-target="#exampleModal">
@@ -56,7 +55,7 @@
     <div class="modal-dialog">
         <div class="modal-content" style="border-radius: 3px;">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Employee</h1>
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Delete Admin</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">

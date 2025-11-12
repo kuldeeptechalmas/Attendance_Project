@@ -54,8 +54,6 @@
             <label class="form-label">Roles</label>
             <select class="form-select" style="height: 40px;" name="roles" aria-label="Default select example">
                 <option value="">Select</option>
-
-                <option value="HR" {{ old('roles',$employee->roles)=='HR'?'selected':'' }}>HR</option>
                 <option value="Employee" {{ old('roles',$employee->roles)=='Employee'?'selected':'' }}>Employee</option>
 
             </select>
@@ -96,8 +94,12 @@
         </div>
         @enderror
 
-        <div class="text-center py-5">
-            <button type="submit" class="btn btn-primary w-100">Save Change</button>
+        <div class="text-center my-4" style="display: flex;justify-content: space-between;">
+            <a href="{{ route('hrget.employee.data') }}">
+                <button type="button" class="btn btn-secondary">Back</button>
+            </a>
+            <button type="submit" class="btn btn-primary">Save Change</button>
+
         </div>
     </form>
 </div>

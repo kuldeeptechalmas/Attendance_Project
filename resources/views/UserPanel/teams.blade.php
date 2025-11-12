@@ -5,7 +5,7 @@
 <div style="font-size: 18px;background-color: #0000000d;text-align: center;">
     Members
 </div>
-<table class="table table-hover">
+<table class="table table-hover" style="margin-bottom: 40px;">
     <tr>
         <td>Name</td>
         <td>Email</td>
@@ -19,7 +19,10 @@
             @endif
         </td>
         <td>{{ $item->email }}</td>
-        @if (Auth::user()->roles!=$item->roles)
+
+        @if($item->email=='superadmin12@gmail.com')
+        <td>Owner</td>
+        @elseif (Auth::user()->roles!=$item->roles)
         <td>{{ $item->roles }}</td>
         @else
         <td></td>

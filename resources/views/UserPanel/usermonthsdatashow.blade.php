@@ -1,6 +1,3 @@
-@php
-use Carbon\Carbon;
-@endphp
 @extends('UserPanel/userindex')
 
 @section('content')
@@ -10,11 +7,7 @@ use Carbon\Carbon;
     $totalWorkMinute = 0;
     $index=1;
     @endphp
-    {{-- @if (Auth::user()->roles=="HR")
-    <div style="display: flex;justify-content: end;padding-right: 55px;">
-        <input style="width: 18%" type="submit" class="btn btn-primary" value="Add Attendance">
-    </div>
-    @endif --}}
+    <h3>Attendance of Month : {{ $month }}/2025</h3>
     @foreach ($data as $item)
     <div class="row attendanceshow">
 
@@ -31,8 +24,8 @@ use Carbon\Carbon;
 
             @php
 
-            $time1 = Carbon::parse($check->check_in_time);
-            $time2 = Carbon::parse($check->check_out_time);
+            $time1 = now()::parse($check->check_in_time);
+            $time2 = now()::parse($check->check_out_time);
             $diffrence = $time1->diff($time2);
             $totalHover+=$diffrence->h;
             $totalMinute+=$diffrence->i;
@@ -64,7 +57,6 @@ use Carbon\Carbon;
                 <span>Remove</span>
             </a>
         </div>
-        @if (Auth::user()->roles=="HR")
         <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
             Total Time :
             <span id="changetime">
@@ -83,7 +75,6 @@ use Carbon\Carbon;
             <br>
             @endforeach
         </div>
-        @endif
     </div>
     @endforeach
 
@@ -115,8 +106,6 @@ use Carbon\Carbon;
 </div>
 <script>
     function checkintimesHR(e) {
-        console.log($(e).val());
-        console.log($($(e).next()[0]).val());
 
 
         $.ajax({
@@ -131,8 +120,6 @@ use Carbon\Carbon;
                 , attendanceid: $($(e).prev()[0]).val()
             }
             , success: function(res) {
-                console.log(res['hover']);
-                console.log(res['minute']);
                 $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
             }
             , error: function() {
@@ -142,8 +129,6 @@ use Carbon\Carbon;
     }
 
     function checkouttimesHR(e) {
-        console.log($(e).val());
-        console.log($($(e).prev()[0]).val());
 
         $.ajax({
             headers: {
@@ -157,8 +142,6 @@ use Carbon\Carbon;
                 , attendanceid: $($(e).next()[0]).val()
             }
             , success: function(res) {
-                console.log(res['hover']);
-                console.log(res['minute']);
                 $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
             }
             , error: function() {

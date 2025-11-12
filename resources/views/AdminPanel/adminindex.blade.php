@@ -127,11 +127,27 @@
                     HR
                 </a>
             </div>
+            @if (Auth::user()->email=='superadmin12@gmail.com')
+
             <div style="padding:10px 25px;">
-                <a href="{{ route('admin.add') }}" style="font-size: 18px;color: black;text-decoration: none;">
-                    Add User
+                <a href="{{ route('superadmin.show.admin') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Admin
                 </a>
             </div>
+            @endif
+            @if (Auth::user()->roles=='Super Admin')
+            <div style="padding:10px 25px;">
+                <a href="{{ route('admin.add') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Add Employee,HR,Admin
+                </a>
+            </div>
+            @else
+            <div style="padding:10px 25px;">
+                <a href="{{ route('admin.add') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                    Add Employee,HR
+                </a>
+            </div>
+            @endif
         </div>
         <div class="col-9">
             @if (isset($dashboard))

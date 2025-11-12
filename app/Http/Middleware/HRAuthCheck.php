@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class User_Auth_Check
+class HRAuthCheck
 {
     /**
      * Handle an incoming request.
@@ -17,7 +17,7 @@ class User_Auth_Check
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()) {
-            if (Auth::user()->roles == 'HR' || Auth::user()->roles == 'Employee') {
+            if (Auth::user()->roles == 'HR') {
                 return $next($request);
             } else {
                 return redirect()->route('login');

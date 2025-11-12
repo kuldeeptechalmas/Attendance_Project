@@ -27,7 +27,7 @@
 @toastifyJs
 
 <div class="bg-white">
-    <h1 style="text-align: center;padding-top: 18px;">Edit Employee</h1>
+    <h1 style="text-align: center;padding-top: 18px;">Edit HR</h1>
     <form class="formregistaration" method="post" action="{{ route('admin.modify.hr') }}">
         @csrf
         <input type="text" name="action" value="modify" hidden>
@@ -59,7 +59,10 @@
 
                 <option value="HR" {{ old('roles',$hr->roles)=='HR'?'selected':'' }}>HR</option>
                 <option value="Employee" {{ old('roles',$hr->roles)=='Employee'?'selected':'' }}>Employee</option>
+                @if (Auth::user()->roles=='Super Admin')
+                <option value="Admin" {{ old('roles',$hr->roles)=='Admin'?'selected':'' }}>Admin</option>
 
+                @endif
             </select>
         </div>
         @error("roles")

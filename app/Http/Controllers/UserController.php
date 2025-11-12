@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\User;
-use Carbon\Carbon;
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -46,8 +46,12 @@ class UserController extends Controller
     // HR Get Employees List
     public function HR_get_Employee_Data(Request $request)
     {
-        $Get_all_Employee = User::where('roles', 'Employee')->get();
-        return view("UserPanel.HR.hrgetemployee", ['employeedata' => $Get_all_Employee]);
+        $Get_all_Employee = User::where('roles', 'Employee')->paginate(10);
+        if (isset($Get_all_Employee)) {
+            return view("UserPanel.HR.hrgetemployee", ['employeedata' => $Get_all_Employee]);
+        } else {
+            return redirect()->back()->with('error', 'not found record');
+        }
     }
 
     // Hr Get Employee Data By Id
@@ -55,7 +59,11 @@ class UserController extends Controller
     {
 
         $Find_User_Employee = User::find($id);
-        return view("UserPanel.HR.employeemodify", ['employee' => $Find_User_Employee]);
+        if (isset($Find_User_Employee)) {
+            return view("UserPanel.HR.employeemodify", ['employee' => $Find_User_Employee]);
+        } else {
+            return redirect()->back()->with('error', 'not found record');
+        }
     }
 
     // Hr Get Employee Data Modify
