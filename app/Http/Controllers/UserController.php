@@ -112,6 +112,7 @@ class UserController extends Controller
         $Find_User->roles = $request->roles;
         $Find_User->salary = $request->salary;
         $Find_User->joinindate = $request->joinindate;
+        $Find_User->exitdate = isset($request->exitdate) ? $request->exitdate : null;
         $Find_User->save();
 
         return redirect()->back()->with(["update" => "yes"]);
@@ -140,7 +141,6 @@ class UserController extends Controller
                 ],
                 "roles" => "required",
                 "joinindate" => "required",
-                "salary" => "required|numeric|gt:4999",
             ], [
                 "name.required" => "Enter Name is Required",
                 "name.not_regex" => "Not Only Number is Required",
@@ -156,10 +156,6 @@ class UserController extends Controller
                 "phoneno.numeric" => "Enter Only Number is Required",
                 "phoneno.digits" => "Enter 10 Digit Phone No is Required",
                 "phoneno.unique" => "Enter Phone No has Already Been Taken.",
-
-                "salary.required" => "Enter Salary is Required",
-                "salary.numeric" => "Enter Only Number is Required",
-                "salary.gt" => "Enter Salary is 5000 Up Required",
             ]);
 
             if ($validators->fails()) {
@@ -170,7 +166,6 @@ class UserController extends Controller
             $Find_User->name = $request->name;
             $Find_User->phoneno = $request->phoneno;
             $Find_User->roles = $request->roles;
-            $Find_User->salary = $request->salary;
             $Find_User->joinindate = $request->joinindate;
             $Find_User->email = $request->email;
             $Find_User->save();
@@ -182,39 +177,52 @@ class UserController extends Controller
     }
 
     // Month wise Data Find
-    public function Monthly_Data_For_Employee_Find(Request $request)
+    public function Monthly_Data_For_Employee_Find($empid, Request $request)
     {
         // Hr show Record
         $userid = Auth::user()->id;
-        if (isset($request->id)) {
-            $userid = $request->id;
+        if (isset($empid)) {
+            $userid = $empid;
         }
 
         $Get_Months = DB::table("attendance")
-            ->select(DB::raw("MONTH(date) as month"))
+            ->select(DB::raw("MONTH(date) as month,YEAR(date) as year"))
             ->distinct()
             ->where("user_id", $userid)
             ->whereNull('deleted_at')
             ->get();
 
+        Session::put('userid', $userid);
+
         return view('UserPanel.usermonthattandance', ['months' => $Get_Months, 'userid' => $userid]);
     }
 
     // Month Wise Data Show
-    public function Monthly_Data_For_Employee_Show(Request $request)
+    public function Monthly_Data_For_Employee_Show($month, $year, Request $request)
     {
+        // dd()
         // Hr show Record 
         $userid = Auth::user()->id;
-        if (isset($request->userid)) {
-            $userid = $request->userid;
+        if (Session::get('userid')) {
+            $userid = Session::get('userid');
         }
+        // $month = Session::get('month');
 
         $Month_Wise_User_Data = Attendance::with('checkinoutdataget')
-            ->where("date", "like", "2025-" . $request->month . "-%")
+            ->where("date", "like", $year . "-" . $month . "-%")
             ->where("user_id", $userid)
             ->get();
+
+        $find_user = User::find($userid);
+
         if (isset($Month_Wise_User_Data)) {
-            return view("UserPanel.usermonthsdatashow", ['data' => $Month_Wise_User_Data, "month" => $request->month, "userid" => $userid]);
+            return view("UserPanel.usermonthsdatashow", [
+                'data' => $Month_Wise_User_Data,
+                "month" => $month,
+                "year" => $year,
+                "userid" => $userid,
+                "username" => $find_user->name,
+            ]);
         } else {
             dd("Monshs Data Not Found");
         }

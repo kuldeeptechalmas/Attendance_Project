@@ -41,22 +41,11 @@
                         <label class="form-label">Roles</label>
                         <select class="form-select" style="height: 40px;" name="roles" aria-label="Default select example">
                             <option value="">Select</option>
-                            <option value="HR" {{ old('roles')=='HR'?'selected':'' }}>HR</option>
                             <option value="Employee" {{ old('roles')=='Employee'?'selected':'' }}>Employee</option>
                         </select>
                         {{-- <input type="text" value="{{ old('roles') }}" class="form-control"> --}}
                     </div>
                     @error("roles")
-                    <div class="alert alert-danger errordiv" role="alert">
-                        {{ $message }}
-                    </div>
-                    @enderror
-
-                    <div class="mb-3">
-                        <label class="form-label">Salary</label>
-                        <input type="text" name="salary" value="{{ old('salary') }}" class="form-control">
-                    </div>
-                    @error("salary")
                     <div class="alert alert-danger errordiv" role="alert">
                         {{ $message }}
                     </div>

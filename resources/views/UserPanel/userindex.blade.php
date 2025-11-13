@@ -79,12 +79,7 @@
                 {{ Auth::user()->roles }} <br>
             </h5>
             <div style="padding:10px 25px;">
-                <a href="{{ route('user.Dashboard') }}" style="font-size: 18px;color: black;text-decoration: none;">
-                    Today Attendance
-                </a>
-            </div>
-            <div style="padding:10px 25px;">
-                <a href="{{ route('month.attendance') }}" style="font-size: 18px;color: black;text-decoration: none;">
+                <a href="/Month-Attendance/{{ Auth::user()->id }}" style="font-size: 18px;color: black;text-decoration: none;">
                     Month Attendance
                 </a>
             </div>
@@ -96,58 +91,9 @@
         </div>
         <div class="col-9">
             @if (isset($dashboard))
+            @if ($attendance->isNotEmpty())
 
-
-            <div style="width: 98%;box-shadow: 1px 1px 4px #716c6c;">
-                <div class="row">
-                    {{-- <div class="col-4">
-                            <div style="height: 50%;">
-                                Time
-                            </div>
-                            <div style="height: 50%;padding: 0px 12px 9px 16px;">
-                                <button type="button" class="btn" style="background-color: #f44336;color: white;height: 100%;width: 100%;">STOP</button>
-                                <button type="button" class="btn" style="background-color: blue;color: white;height: 100%;width: 100%;">START</button>
-                            </div>
-                        </div> --}}
-
-                    <div class="col-6">
-                        <div style="display: flex;justify-content: center;">
-                            @if (Session::get('checkin'))
-
-                            <button class="btn btn-primary" disabled style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
-                                Check In
-                            </button>
-                            @else
-
-                            <a href="{{ route('attendance.checkin') }}" style="text-decoration: none;">
-                                <button class="btn btn-primary" style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
-                                    Check In
-                                </button>
-                            </a>
-                            @endif
-                        </div>
-                    </div>
-                    <div class="col-6">
-                        <div style="display: flex;justify-content: center;">
-                            @if (Session::get('checkin'))
-
-                            <a href="{{ route('attendance.checkout') }}" style="text-decoration: none;">
-                                <button class="btn btn-danger" style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
-                                    Check Out
-                                </button>
-                            </a>
-
-                            @else
-                            <button class="btn btn-danger" style="font-size: 29px;font-family: initial;height: 69px;margin: 10px;display: flex;justify-content: center;align-items: center;">
-                                Check Out
-                            </button>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
+            <div>Today Attendance</div>
             <div class="row" style="margin-left: 0px;margin-right: 5px;">
                 @foreach ($attendance as $item)
                 <div class="row attendanceshow">
@@ -187,21 +133,16 @@
                         </div>
                     </div>
                     <div class="col-4" style="display: flex;justify-content: end;padding-right: 34px;">
-                        <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
-                            <span>Remove</span>
-                        </a>
+
                     </div>
                     <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
                         TimeSheet Date <br>
                         @foreach ($item->checkinoutdataget as $check)
                         <input type="text" name="" value="{{ $item->id }}" id="" hidden>
-                        <input style="margin: 14px 12px 10px 12px;" onchange="checkintimes(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
+                        <input style="margin: 14px 12px 10px 12px;" disabled type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
                         <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
-                        <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimes(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
+                        <input style="margin: 14px 12px 10px 12px;" type="time" disabled name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
                         <input type="text" name="" value="{{ $item->id }}" id="" hidden>
-                        <a href="/Check-Delete/{{ $check->id }}" style="margin-left: 312px;text-decoration: none;color:red">
-                            <i class="fa-solid fa-trash"></i>
-                        </a>
                         <br>
                         @endforeach
 
@@ -209,6 +150,13 @@
                 </div>
                 @endforeach
             </div>
+            @else
+            <div style="display: flex;justify-content: center;font-size: 19px;margin-top: 133px;">
+                <div style="background: white;width: 267px;display: flex;justify-content: center;">
+                    Please Add Attendance ToDay
+                </div>
+            </div>
+            @endif
             @else
 
             @yield('content')

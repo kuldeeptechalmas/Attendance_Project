@@ -56,18 +56,8 @@
         @enderror
 
         <div class="mb-3">
-            <label class="form-label">Salary</label>
-            <input type="text" name="salary" value="{{ old('salary',Auth::user()->salary) }}" class="form-control">
-        </div>
-        @error("salary")
-        <div class="alert alert-danger errordiv" role="alert">
-            {{ $message }}
-        </div>
-        @enderror
-
-        <div class="mb-3">
             <label class="form-label">Join in Date</label>
-            <input type="date" name="joinindate" class="form-control" value="{{ old('joinindate',Auth::user()->joinindate) }}" style="height: 40px;">
+            <input type="date" name="joinindate" disabled class="form-control" value="{{ old('joinindate',Auth::user()->joinindate) }}" style="height: 40px;">
         </div>
         @error("joinindate")
         <div class="alert alert-danger errordiv" role="alert">

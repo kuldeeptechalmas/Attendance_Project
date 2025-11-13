@@ -33,6 +33,9 @@
         <div style="margin: 30px;font-size: 18px;">
             Salary : {{ round($data['salary'],2) }}
         </div>
+        <div style="margin: 30px;font-size: 18px;">
+            Main Salary : {{ round($data['mainsalary'],2) }}
+        </div>
     </div>
 </body>
 </html>

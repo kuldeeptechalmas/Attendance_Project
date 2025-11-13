@@ -7,9 +7,80 @@ use App\Models\CheckInOut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 
 class AttendanceController extends Controller
 {
+    public function Add_Attendance_Employee(Request $request)
+    {
+
+        if ($request->isMethod('post')) {
+
+            $validator = Validator::make(
+                $request->all(),
+                [
+                    'date' => 'required',
+                    'checkin' => 'required',
+                    'checkout' => 'required',
+                ],
+                [
+                    'date.required' => 'Enter Date is Required.',
+                    'checkin.required' => 'Enter Check In Time is Required.',
+                    'checkout.required' => 'Enter Check Out is Time Required.',
+                ]
+            );
+
+            if ($validator->fails()) {
+                return redirect()->back()->withInput()->withErrors($validator);
+            }
+
+            $find_attendance_exist = Attendance::where('user_id', $request->userid)
+                ->where('date', $request->date)->first();
+            if (isset($find_attendance_exist)) {
+                $checkinout = new CheckInOut();
+                $checkinout->check_in_time = $request->checkin;
+                $checkinout->check_out_time = $request->checkout;
+                $checkinout->attandance_id = $find_attendance_exist->id;
+                if ($request->break) {
+                    $checkinout->break = $request->break;
+                } else {
+                    $checkinout->break = '';
+                }
+                $checkinout->save();
+            } else {
+                $attendance = new Attendance();
+                $attendance->user_id = $request->userid;
+                $attendance->date = $request->date;
+                $attendance->save();
+
+                $checkinout = new CheckInOut();
+                $checkinout->check_in_time = $request->checkin;
+                $checkinout->check_out_time = $request->checkout;
+                if ($request->break) {
+                    $checkinout->break = $request->break;
+                } else {
+                    $checkinout->break = '';
+                }
+                $checkinout->attandance_id = $attendance->id;
+                $checkinout->save();
+            }
+            // months wise
+
+            if (isset($find_attendance_exist)) {
+                $userid = $find_attendance_exist->id;
+            } else {
+                $userid = $request->userid;
+            }
+
+            $months = now()->createFromDate($request->date)->month;
+            $years = now()->createFromDate($request->date)->year;
+            return redirect()->route('month.attendance.show', [
+                'month' => $months,
+                'year' => $years
+            ]);
+        }
+        return view('UserPanel.addattendance', ['userid' => $request->userid]);
+    }
     // Check In
     public function Attendance_Check_IN(Request $request)
     {
@@ -97,11 +168,10 @@ class AttendanceController extends Controller
                 $diffrence = $time1->diff($time2);
                 $totalHover += $diffrence->h;
                 $totalMinute += $diffrence->i;
-            }
-
-            if ($totalMinute >= 60) {
-                $totalHover += 1;
-                $totalMinute -= 60;
+                if ($totalMinute > 60) {
+                    $totalHover += 1;
+                    $totalMinute -= 60;
+                }
             }
 
             return response()->json([
@@ -152,12 +222,22 @@ class AttendanceController extends Controller
     }
 
     // Check Data Delete
-    public function Check_Data_Delete($checkid, Request $request)
+    public function Check_Data_Delete(Request $request)
     {
-        $Find_Check_Data = CheckInOut::find($checkid);
+
+        $Find_Check_Data = CheckInOut::find($request->checkid);
+        $find = Attendance::find($Find_Check_Data->attandance_id);
+        $userid = $find->user_id;
+        $date = $find->date;
+        $months = now()->createFromDate($date)->month;
+        $years = now()->createFromDate($date)->year;
+
         if (isset($Find_Check_Data)) {
             $Find_Check_Data->delete();
-            return redirect()->route('user.Dashboard');
+            return redirect()->route('month.attendance.show', [
+                'month' => $months,
+                'year' => $years
+            ]);
         } else {
             return redirect()->back();
         }

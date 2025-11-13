@@ -13,6 +13,7 @@
         <td>Join In Date</td>
         <td>Action</td>
         <td>Attendance</td>
+        <td>Add Attendance</td>
     </tr>
     @foreach ($employeedata as $item)
     <tr>
@@ -26,11 +27,20 @@
             </a>
         </td>
         <td>
-            <form action="{{ route('month.attendance') }}" method="post">
-                @csrf
-                <input type="text" name="id" value="{{ $item->id }}" hidden>
-                <input type="submit" class="btn btn-info" value="Attendance">
-            </form>
+            {{-- <form action="{{ route('month.attendance') }}" method="post">
+            @csrf
+            <input type="text" name="id" value="{{ $item->id }}" hidden>
+            </form> --}}
+            <a href="/Month-Attendance/{{ $item->id }}">
+
+                <input type="button" class="btn btn-info" value="Attendance">
+            </a>
+        </td>
+        <td>
+            <a href="{{ route('add.attendance.employee',['userid'=>$item->id]) }}">
+
+                <input type="button" class="btn btn-primary" value="Add Attendance">
+            </a>
         </td>
     </tr>
     @endforeach

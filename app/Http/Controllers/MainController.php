@@ -89,7 +89,6 @@ class MainController extends Controller
                 "roles" => "required",
                 "joinindate" => "required",
                 "conformpassword" => "required|same:password",
-                "salary" => "required|numeric|gt:4999",
             ], [
                 "name.required" => "Enter Name is Required",
                 "name.not_regex" => "Not Only Number is Required",
@@ -115,10 +114,6 @@ class MainController extends Controller
 
                 "roles.required" => "Enter Roles is Required",
                 "joinindate.required" => "Enter Join in Date is Required",
-
-                "salary.required" => "Enter Salary is Required",
-                "salary.numeric" => "Enter Only Number is Required",
-                "salary.gt" => "Enter Salary is 5000 Up Required",
             ]);
 
             if ($validators->fails()) {
@@ -129,7 +124,7 @@ class MainController extends Controller
             $user->email = $request->email;
             $user->phoneno = $request->phoneno;
             $user->roles = $request->roles;
-            $user->salary = $request->salary;
+            $user->salary = 0;
             $user->joinindate = $request->joinindate;
             $user->password = Hash::make($request->password);
             $user->save();
@@ -160,14 +155,28 @@ class MainController extends Controller
             $mainSalary = $find_Employee->salary;
             $mainName = $find_Employee->name;
             $mainPhone = $find_Employee->phoneno;
-        }
-        $currentStart = now()::createFromDate('2025', $request->month, '1');
 
-        if ($request->month == now()->month) {
-
-            $currentEnd = now();
-        } else {
+            $currentStart = now()::createFromDate($request->year, $request->month, '1');
             $currentEnd = $currentStart->copy()->endOfMonth();
+            $usermonthjoinin = now()->createFromDate($find_Employee->joinindate)->month;
+            $usermonthexit = now()->createFromDate($find_Employee->exitdate)->month;
+            $currentmonth = $currentStart->month;
+            if ($usermonthjoinin == $currentmonth) {
+                $currentStart = now()->createFromDate($find_Employee->joinindate);
+            }
+            if ($usermonthexit == $currentmonth) {
+                $currentEnd = now()->createFromDate($find_Employee->exitdate);
+            }
+        } else {
+
+            $currentStart = now()::createFromDate($request->year, $request->month, '1');
+
+            if ($request->month == now()->month) {
+
+                $currentEnd = now();
+            } else {
+                $currentEnd = $currentStart->copy()->endOfMonth();
+            }
         }
 
         $totalDay = $currentStart->daysInMonth;
@@ -204,6 +213,7 @@ class MainController extends Controller
             "salary" => $salary,
             "name" => $mainName,
             "phone" => $mainPhone,
+            "mainsalary" => $mainSalary,
         ];
 
         if ($request->action == 'view') {

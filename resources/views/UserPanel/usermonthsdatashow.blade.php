@@ -7,7 +7,111 @@
     $totalWorkMinute = 0;
     $index=1;
     @endphp
-    <h3>Attendance of Month : {{ $month }}/2025</h3>
+    <div style="display: flex;justify-content: space-around;">
+
+        <h3>Attendance of Month : {{ $month }}/{{ $year }}</h3>
+        <div>
+            @if (Auth::user()->roles=='HR')
+
+            <a href="{{ route('add.attendance.employee',['userid'=>$userid]) }}">
+
+                <input type="button" class="btn btn-primary" value="Add Attendance">
+            </a>
+            @endif
+        </div>
+    </div>
+    @if (Auth::user()->roles=='HR')
+    <div style="background: white;margin-bottom: 20px;height: 37px;">
+        Employee Name : {{ $username }}
+    </div>
+    <table class="table table-white table-hover">
+        <tr>
+            <td>Index</td>
+            <td>Date</td>
+            <td>Check In and Out Time</td>
+            <td>Total Hover</td>
+            <td>Delete</td>
+        </tr>
+        @foreach ($data as $item)
+
+        <tr>
+            <td>{{ $index }}</td>
+            @php
+            $totalHover = 0;
+            $totalMinute = 0;
+            @endphp
+            @foreach ($item->checkinoutdataget as $check)
+            @if ($check->check_out_time!='00:00:00' && $check->break==null)
+
+            @php
+
+            $time1 = now()::parse($check->check_in_time);
+            $time2 = now()::parse($check->check_out_time);
+            $diffrence = $time1->diff($time2);
+            $totalHover+=$diffrence->h;
+            $totalMinute+=$diffrence->i;
+
+            if($totalMinute>=60)
+            {
+            $totalHover+=1;
+            $totalMinute-=60;
+            }
+            @endphp
+
+            @endif
+            @endforeach
+            @php
+            $index+=1;
+            $totalWorkHover+=$totalHover;
+            $totalWorkMinute+=$totalMinute;
+            if($totalWorkMinute>=60)
+            {
+            $totalWorkHover+=1;
+            $totalWorkMinute-=60;
+            }
+            @endphp
+            <td>{{ $item->date }}</td>
+            <td id="maintd" class="d-flex w-100 flex-column">
+                @if ($item->checkinoutdataget->isNotEmpty())
+
+                @foreach ($item->checkinoutdataget as $check)
+                <div class="d-flex align-items-center">
+                    <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+                    <input style="margin: 14px 12px 10px 12px;" onchange="checkintimesHR(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
+                    <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
+                    <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimesHR(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
+                    <input type="text" name="" value="{{ $item->id }}" id="" hidden>
+                    @if ($check->break!=null)
+                    BT
+                    @endif
+                    <form action="{{ route('check.data.delete') }}" method="post">
+                        @csrf
+                        <input type="text" name="checkid" value="{{ $check->id }}" hidden id="">
+                        <button type="submit"><i class="fa-solid fa-trash"></i></button>
+                    </form>
+                    {{-- <a href="/Check-Delete/{{ $check->id }}" style="margin-top: 17px;margin-left: 38px;text-decoration: none;color:red">
+
+                    </a> --}}
+                </div>
+                @endforeach
+                @else
+                Add Data
+                @endif
+            </td>
+            <td id="changetime">
+                {{$totalHover }}:{{ $totalMinute }}
+            </td>
+            <td>
+                <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
+                    <span>Remove</span>
+                </a>
+            </td>
+        </tr>
+        @endforeach
+    </table>
+    @endif
+
+    @if (Auth::user()->roles=='Employee')
     @foreach ($data as $item)
     <div class="row attendanceshow">
 
@@ -53,9 +157,12 @@
             @endphp
         </div>
         <div class="col-4" style="display: flex;justify-content: end;padding-right: 34px;">
+            @if (Auth::user()->roles=='HR')
+
             <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
                 <span>Remove</span>
             </a>
+            @endif
         </div>
         <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
             Total Time :
@@ -63,6 +170,7 @@
                 {{$totalHover }}:{{ $totalMinute }}
             </span>
             <br>
+            @if (Auth::user()->roles=='HR')
             @foreach ($item->checkinoutdataget as $check)
             <input type="text" name="" value="{{ $item->id }}" id="" hidden>
             <input style="margin: 14px 12px 10px 12px;" onchange="checkintimesHR(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
@@ -74,9 +182,11 @@
             </a>
             <br>
             @endforeach
+            @endif
         </div>
     </div>
     @endforeach
+    @endif
 
     <div style="margin: 20px 0px 30px 0px;background: white;width: 98%;display: flex;">
         <div>Total Hourse :</div>
@@ -89,6 +199,7 @@
             <input type="text" name="action" value="view" hidden id="">
             <input type="text" name="userid" value="{{ $userid }}" hidden id="">
             <input type="text" name="month" value="{{ $month }}" hidden id="">
+            <input type="text" name="year" value="{{ $year }}" hidden id="">
             <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="" hidden>
             <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="" hidden>
             <input type="submit" class="btn btn-primary" value="View Slip">
@@ -107,7 +218,6 @@
 <script>
     function checkintimesHR(e) {
 
-
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
@@ -120,7 +230,8 @@
                 , attendanceid: $($(e).prev()[0]).val()
             }
             , success: function(res) {
-                $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+                // $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+                $(e).parent().parent().next().html(res['hover'] + ":" + res['minute']);
             }
             , error: function() {
 
@@ -142,7 +253,8 @@
                 , attendanceid: $($(e).next()[0]).val()
             }
             , success: function(res) {
-                $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+                // $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+                $(e).parent().parent().next().html(res['hover'] + ":" + res['minute']);
             }
             , error: function() {
 
