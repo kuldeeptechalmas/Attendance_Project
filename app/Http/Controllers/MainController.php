@@ -156,6 +156,7 @@ class MainController extends Controller
             $mainName = $find_Employee->name;
             $mainPhone = $find_Employee->phoneno;
 
+            // Count starting date and ending date
             $currentStart = now()::createFromDate($request->year, $request->month, '1');
             $currentEnd = $currentStart->copy()->endOfMonth();
             $usermonthjoinin = now()->createFromDate($find_Employee->joinindate)->month;
@@ -179,6 +180,7 @@ class MainController extends Controller
             }
         }
 
+        // count Weeks leave
         $totalDay = $currentStart->daysInMonth;
         $current = $currentStart->copy();
 
@@ -188,28 +190,48 @@ class MainController extends Controller
             }
             $current->addDay();
         }
-        // dd($weeksInLeave);
 
+        // salary count
         $workingDay = $totalDay;
-        $workingHours = $workingDay * 8;
+        $workingHours = $totalDay * 8;
         $salary = 0;
-        $leaveHours = count($weeksInLeave) * 8;
-        if ($workingHours <= ($request->hourse + $leaveHours)) {
-            $salary = $mainSalary;
-        } else {
-            $PerHourse = $mainSalary / $workingHours;
-            $diffHours = $workingHours - ($request->hourse + $leaveHours);
-            $salary = $mainSalary - ($diffHours * $PerHourse);
+        $leaveHours = isset($weeksInLeave) ? count($weeksInLeave) * 8 : 0;
+        $leaveDay = isset($weeksInLeave) ? count($weeksInLeave) : 0;
+        $totalWorkHourse = $workingHours - $leaveHours;
+        // dd($request->day);
+        if ($request->day != 0 && $request->hourse != 0) {
+
+            // dd($request->hourse + $leaveHours);
+            if ($workingHours < ($request->hourse + $leaveHours)) {
+                $salary = $mainSalary;
+            } else {
+                $perday = $mainSalary / $totalDay;
+                $PerHourse = $perday / 8;
+                $workedDay = $request->day;
+                $workhoursedtouser = $request->day * 8;
+                $diffrentToWorktofix = $workhoursedtouser - $request->hourse;
+                if ($diffrentToWorktofix < 0) {
+
+                    // dd($diffrentToWorktofix);
+                    $diffHours = $workingHours - ($request->hourse + $leaveHours);
+                    // dd($request->hourse + $leaveHours);
+                    $salary = $perday * ($workedDay + $leaveDay);
+                } else {
+                    $diffHours = $workingHours - ($request->hourse + $leaveHours);
+                    $salary = $perday * ($workedDay + $leaveDay) - ($diffrentToWorktofix * $PerHourse);
+                }
+            }
         }
 
         $data = [
             "startdate" => $currentStart->toDateString(),
             "enddate" => $currentEnd->toDateString(),
             "totalday" => $totalDay,
-            "leavesday" => count($weeksInLeave),
+            "leavesday" => isset($weeksInLeave) ? count($weeksInLeave) : 0,
             "hourse" => $request->hourse,
+            "totalhourse" => $totalWorkHourse,
             "minutes" => $request->minutes,
-            "workingday" => round($request->hourse / 8),
+            "workingday" => $request->day,
             "salary" => $salary,
             "name" => $mainName,
             "phone" => $mainPhone,

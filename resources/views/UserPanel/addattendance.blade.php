@@ -8,7 +8,7 @@
         <input type="text" name="userid" value="{{ $userid }}" hidden id="">
         <div class="mb-3">
             <label class="form-label">Date</label>
-            <input type="date" name="date" value="{{ old('date') }}" class="form-control">
+            <input type="date" name="date" min="{{ isset($employee->joinindate)?$employee->joinindate:'' }}" max="{{ isset($employee->exitdate)?$employee->exitdate:'' }}" value="{{ old('date') }}" class="form-control">
         </div>
         @error("date")
         <div class="alert alert-danger errordiv" role="alert">

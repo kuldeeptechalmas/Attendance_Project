@@ -39,9 +39,12 @@
             @php
             $totalHover = 0;
             $totalMinute = 0;
+            $totalBreakHover = 0;
+            $totalBreakMinute = 0;
+
             @endphp
             @foreach ($item->checkinoutdataget as $check)
-            @if ($check->check_out_time!='00:00:00' && $check->break==null)
+            @if ($check->check_out_time!='00:00:00')
 
             @php
 
@@ -57,11 +60,31 @@
             $totalMinute-=60;
             }
             @endphp
+            @if ($check->break!=null)
 
+
+            @php
+
+            $time1 = now()::parse($check->check_in_time);
+            $time2 = now()::parse($check->check_out_time);
+            $diffrence = $time1->diff($time2);
+            $totalBreakHover+=$diffrence->h;
+            $totalBreakMinute+=$diffrence->i;
+
+            if($totalBreakMinute>=60)
+            {
+            $totalBreakHover+=1;
+            $totalBreakMinute-=60;
+            }
+            @endphp
+            @endif
             @endif
             @endforeach
             @php
             $index+=1;
+            $totalHover-=$totalBreakHover;
+            $totalMinute-=$totalBreakMinute;
+
             $totalWorkHover+=$totalHover;
             $totalWorkMinute+=$totalMinute;
             if($totalWorkMinute>=60)
@@ -200,6 +223,7 @@
             <input type="text" name="userid" value="{{ $userid }}" hidden id="">
             <input type="text" name="month" value="{{ $month }}" hidden id="">
             <input type="text" name="year" value="{{ $year }}" hidden id="">
+            <input type="text" name="day" value="{{ count($data) }}" hidden id="">
             <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="" hidden>
             <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="" hidden>
             <input type="submit" class="btn btn-primary" value="View Slip">
@@ -209,6 +233,7 @@
             <input type="text" name="action" value="download" hidden id="">
             <input type="text" name="month" value="{{ $month }}" hidden id="">
             <input type="text" name="userid" value="{{ $userid }}" hidden id="">
+            <input type="text" name="day" value="{{ count($data) }}" hidden id="">
             <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="" hidden>
             <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="" hidden>
             <input type="submit" class="btn btn-primary" value="Download Slip">

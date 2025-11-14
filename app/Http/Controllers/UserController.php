@@ -200,13 +200,11 @@ class UserController extends Controller
     // Month Wise Data Show
     public function Monthly_Data_For_Employee_Show($month, $year, Request $request)
     {
-        // dd()
         // Hr show Record 
         $userid = Auth::user()->id;
         if (Session::get('userid')) {
             $userid = Session::get('userid');
         }
-        // $month = Session::get('month');
 
         $Month_Wise_User_Data = Attendance::with('checkinoutdataget')
             ->where("date", "like", $year . "-" . $month . "-%")

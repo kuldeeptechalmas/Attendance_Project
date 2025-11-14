@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attendance;
 use App\Models\CheckInOut;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -79,7 +80,8 @@ class AttendanceController extends Controller
                 'year' => $years
             ]);
         }
-        return view('UserPanel.addattendance', ['userid' => $request->userid]);
+        $find_employee = User::find($request->userid);
+        return view('UserPanel.addattendance', ['userid' => $request->userid, 'employee' => $find_employee]);
     }
     // Check In
     public function Attendance_Check_IN(Request $request)
@@ -153,6 +155,7 @@ class AttendanceController extends Controller
     {
         $Find_Check_Record = CheckInOut::find($request->checkinid);
         if (isset($Find_Check_Record)) {
+
             $Find_Check_Record->check_in_time = $request->checkintime;
             $Find_Check_Record->save();
 
@@ -160,19 +163,39 @@ class AttendanceController extends Controller
 
             $totalHover = 0;
             $totalMinute = 0;
+            $totalBreakHover = 0;
+            $totalBreakMinute = 0;
 
             foreach ($Find_Attendance->checkinoutdataget as $check) {
+                if ($check->check_out_time != '00:00:00') {
 
-                $time1 = now()::parse($check->check_in_time);
-                $time2 = now()::parse($check->check_out_time);
-                $diffrence = $time1->diff($time2);
-                $totalHover += $diffrence->h;
-                $totalMinute += $diffrence->i;
-                if ($totalMinute > 60) {
-                    $totalHover += 1;
-                    $totalMinute -= 60;
+                    $time1 = now()::parse($check->check_in_time);
+                    $time2 = now()::parse($check->check_out_time);
+                    $diffrence = $time1->diff($time2);
+                    $totalHover += $diffrence->h;
+                    $totalMinute += $diffrence->i;
+                    if ($totalMinute > 60) {
+                        $totalHover += 1;
+                        $totalMinute -= 60;
+                    }
+                    if ($check->break != null) {
+
+                        $time1 = now()::parse($check->check_in_time);
+                        $time2 = now()::parse($check->check_out_time);
+                        $diffrence = $time1->diff($time2);
+                        $totalBreakHover += $diffrence->h;
+                        $totalBreakMinute += $diffrence->i;
+
+                        if ($totalBreakMinute >= 60) {
+                            $totalBreakHover += 1;
+                            $totalBreakMinute -= 60;
+                        }
+                    }
                 }
             }
+
+            $totalHover -= $totalBreakHover;
+            $totalMinute -= $totalBreakMinute;
 
             return response()->json([
                 'Update' => "done",
@@ -196,20 +219,39 @@ class AttendanceController extends Controller
 
             $totalHover = 0;
             $totalMinute = 0;
+            $totalBreakHover = 0;
+            $totalBreakMinute = 0;
 
             foreach ($Find_Attendance->checkinoutdataget as $check) {
+                if ($check->check_out_time != '00:00:00') {
 
-                $time1 = now()::parse($check->check_in_time);
-                $time2 = now()::parse($check->check_out_time);
-                $diffrence = $time1->diff($time2);
-                $totalHover += $diffrence->h;
-                $totalMinute += $diffrence->i;
+                    $time1 = now()::parse($check->check_in_time);
+                    $time2 = now()::parse($check->check_out_time);
+                    $diffrence = $time1->diff($time2);
+                    $totalHover += $diffrence->h;
+                    $totalMinute += $diffrence->i;
+                    if ($totalMinute > 60) {
+                        $totalHover += 1;
+                        $totalMinute -= 60;
+                    }
+                    if ($check->break != null) {
+
+                        $time1 = now()::parse($check->check_in_time);
+                        $time2 = now()::parse($check->check_out_time);
+                        $diffrence = $time1->diff($time2);
+                        $totalBreakHover += $diffrence->h;
+                        $totalBreakMinute += $diffrence->i;
+
+                        if ($totalBreakMinute >= 60) {
+                            $totalBreakHover += 1;
+                            $totalBreakMinute -= 60;
+                        }
+                    }
+                }
             }
 
-            if ($totalMinute >= 60) {
-                $totalHover += 1;
-                $totalMinute -= 60;
-            }
+            $totalHover -= $totalBreakHover;
+            $totalMinute -= $totalBreakMinute;
 
             return response()->json([
                 'Update' => "done",

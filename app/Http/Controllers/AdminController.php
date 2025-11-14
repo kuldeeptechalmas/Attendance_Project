@@ -174,6 +174,7 @@ class AdminController extends Controller
         $Find_User->roles = $request->roles;
         $Find_User->salary = $request->salary;
         $Find_User->joinindate = $request->joinindate;
+        $Find_User->exitdate = isset($request->exitdate) ? $request->exitdate : null;
         $Find_User->email = $request->email;
         $Find_User->save();
 
@@ -256,6 +257,7 @@ class AdminController extends Controller
         $Find_User->roles = $request->roles;
         $Find_User->salary = $request->salary;
         $Find_User->joinindate = $request->joinindate;
+        $Find_User->exitdate = isset($request->exitdate) ? $request->exitdate : null;
         $Find_User->email = $request->email;
         $Find_User->save();
 

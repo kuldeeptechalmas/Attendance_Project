@@ -92,6 +92,16 @@
         @enderror
 
         <div class="mb-3">
+            <label class="form-label">Exit in Date</label>
+            <input type="date" name="exitdate" class="form-control" value="{{ old('exitdate',$hr->exitdate) }}" style="height: 40px;">
+        </div>
+        @error("exitdate")
+        <div class="alert alert-danger errordiv" role="alert">
+            {{ $message }}
+        </div>
+        @enderror
+
+        <div class="mb-3">
             <label class="form-label">Email Address</label>
             <input type="text" name="email" value="{{ old('email',$hr->email) }}" class="form-control">
         </div>

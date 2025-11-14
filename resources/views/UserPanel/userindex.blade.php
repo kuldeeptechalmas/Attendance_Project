@@ -153,7 +153,7 @@
             @else
             <div style="display: flex;justify-content: center;font-size: 19px;margin-top: 133px;">
                 <div style="background: white;width: 267px;display: flex;justify-content: center;">
-                    Please Add Attendance ToDay
+                    Today Attendance is Not Found
                 </div>
             </div>
             @endif
