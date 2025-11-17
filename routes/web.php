@@ -51,11 +51,11 @@ Route::middleware('AdminAuthCheck')->group(function () {
     Route::match(['get', 'post'], '/Admin-Add', [AdminController::class, 'Admin_Add_Employee_HR'])->name('admin.add');
 });
 
+Route::get('/Dashbord-User', [UserController::class, 'User_Dashboard'])->name('user.Dashboard');
+Route::match(['get', 'post'], '/User-Profile', [UserController::class, 'User_Profile'])->name('user.profile');
+
 // User Route
 Route::middleware('UserAuthCheck')->group(function () {
-
-    Route::get('/Dashbord-User', [UserController::class, 'User_Dashboard'])->name('user.Dashboard');
-    Route::match(['get', 'post'], '/User-Profile', [UserController::class, 'User_Profile'])->name('user.profile');
 
     // Attendance Route
 

@@ -13,7 +13,9 @@
     <div class="row">
         <div class="col-6">
             <div style="padding-left: 87px;padding-top: 17px;">
-                <img src="{{ asset('images/forgetemail.png') }}" alt="">
+                <a href="{{ route('login') }}">
+                    <img src="{{ asset('images/forgetemail.png') }}" alt="">
+                </a>
             </div>
         </div>
         <div class="col-6" style="margin-top: 8%;padding-right: 57px;">

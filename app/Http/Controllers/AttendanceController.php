@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Attendance;
 use App\Models\CheckInOut;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -14,7 +15,6 @@ class AttendanceController extends Controller
 {
     public function Add_Attendance_Employee(Request $request)
     {
-
         if ($request->isMethod('post')) {
 
             $validator = Validator::make(
@@ -144,7 +144,7 @@ class AttendanceController extends Controller
         $Remove_Attandance = Attendance::find($attendanceid);
         if (isset($Remove_Attandance)) {
             $Remove_Attandance->delete();
-            return redirect()->back();
+            return redirect()->back()->with(['delete' => 'yes']);
         } else {
             return redirect()->back()->with("error", "Not Found Data");
         }
@@ -230,6 +230,7 @@ class AttendanceController extends Controller
                     $diffrence = $time1->diff($time2);
                     $totalHover += $diffrence->h;
                     $totalMinute += $diffrence->i;
+
                     if ($totalMinute > 60) {
                         $totalHover += 1;
                         $totalMinute -= 60;
@@ -268,17 +269,22 @@ class AttendanceController extends Controller
     {
 
         $Find_Check_Data = CheckInOut::find($request->checkid);
-        $find = Attendance::find($Find_Check_Data->attandance_id);
-        $userid = $find->user_id;
-        $date = $find->date;
+        $find_attendance = Attendance::find($Find_Check_Data->attandance_id);
+        
+        $userid = $find_attendance->user_id;
+        $date = $find_attendance->date;
         $months = now()->createFromDate($date)->month;
         $years = now()->createFromDate($date)->year;
 
         if (isset($Find_Check_Data)) {
             $Find_Check_Data->delete();
+            if (count($find_attendance->checkinoutdataget) == 0) {
+                $find_attendance->delete();
+            }
+            Session::put('checkinout_delete', 'yes');
             return redirect()->route('month.attendance.show', [
                 'month' => $months,
-                'year' => $years
+                'year' => $years,
             ]);
         } else {
             return redirect()->back();

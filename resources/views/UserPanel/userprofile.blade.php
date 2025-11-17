@@ -43,6 +43,8 @@
                 <option value="Employee" {{ old('roles',Auth::user()->roles)=='Employee'?'selected':'' }}>Employee</option>
                 @elseif (Auth::user()->roles=='HR')
                 <option value="HR" {{ old('roles',Auth::user()->roles)=='HR'?'selected':'' }}>HR</option>
+                @elseif (Auth::user()->roles=='Admin')
+                <option value="Admin" {{ old('roles',Auth::user()->roles)=='Admin'?'selected':'' }}>Admin</option>
                 @elseif (Auth::user()->roles=='Employee')
                 <option value="Employee" {{ old('roles',Auth::user()->roles)=='Employee'?'selected':'' }}>Employee</option>
                 @endif

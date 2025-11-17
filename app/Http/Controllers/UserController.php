@@ -20,6 +20,18 @@ class UserController extends Controller
     // Dashbord
     public function User_Dashboard(Request $request)
     {
+        if (Auth::user()->roles == 'Admin' || Auth::user()->roles == 'Super Admin') {
+            $Count_Employee = User::where('roles', 'Employee')->get();
+            $Count_Hr = User::where('roles', 'HR')->get();
+            $Count_Admin = User::where('roles', 'Admin')->get();
+
+            return view('UserPanel.userindex', [
+                'dashboard' => 'yes',
+                'countemployee' => $Count_Employee->count(),
+                'counthr' => $Count_Hr->count(),
+                'countadmin' => $Count_Admin->count(),
+            ]);
+        }
         $User_Attendance_All = Attendance::with('checkinoutdataget')
             ->where("date", now()->toDateString())
             ->where("user_id", Auth::user()->id)
@@ -213,12 +225,19 @@ class UserController extends Controller
 
         $find_user = User::find($userid);
 
+        $delete_checkinout = 'no';
+        if (Session::get('checkinout_delete')) {
+            $delete_checkinout = Session::get('checkinout_delete');
+            Session::forget('checkinout_delete');
+        }
+
         if (isset($Month_Wise_User_Data)) {
             return view("UserPanel.usermonthsdatashow", [
                 'data' => $Month_Wise_User_Data,
                 "month" => $month,
                 "year" => $year,
                 "userid" => $userid,
+                "delete" => $delete_checkinout,
                 "username" => $find_user->name,
             ]);
         } else {

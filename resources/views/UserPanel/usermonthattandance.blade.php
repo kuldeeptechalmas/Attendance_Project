@@ -11,7 +11,7 @@ Select Month To Get Data:
     @endforeach
 </div>
 @else
-<div style="display: flex;justify-content: center;font-size: 22px;margin-top: 190px;">
+<div style="display: flex;justify-content: center;font-size: 22px;margin-top: 180px;">
     <div style="background: white;width: 200px;display: flex;justify-content: center;">
         Not Found Data
     </div>

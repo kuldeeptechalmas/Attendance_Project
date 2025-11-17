@@ -48,7 +48,9 @@
         </div>
         <div class="col-6">
             <div style="padding-top: 17px;">
-                <img src="{{ asset('images/forgetpassword.png') }}" alt="">
+                <a href="{{ route('login') }}">
+                    <img src="{{ asset('images/forgetpassword.png') }}" alt="">
+                </a>
             </div>
         </div>
     </div>

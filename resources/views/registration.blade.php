@@ -11,9 +11,9 @@
 
 </head>
 <body class="bg-light maindiv">
-    <div class="bg-white card rounded-5">
+    <div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-6 bg-white card rounded-5">
                 <h5 class="text-center mt-4" style="font-size: 24px;">Registration</h5>
                 <form class="formregistaration" method="post" action="{{ route('registration') }}">
                     @csrf

@@ -42,12 +42,7 @@ class MainController extends Controller
             if (isset($Find_User)) {
                 if (Auth::attempt($request->only("email", "password"))) {
                     Auth::login($Find_User);
-
-                    if ($Find_User->roles == 'Admin' || $Find_User->roles == 'Super Admin') {
-                        return redirect()->route('admin.dashbord');
-                    } else {
-                        return redirect()->route("user.Dashboard");
-                    }
+                    return redirect()->route("user.Dashboard");
                 } else {
                     return redirect()->back()->withInput()->withErrors(["password" => "Enter Currect Password."]);
                 }
@@ -184,7 +179,7 @@ class MainController extends Controller
         $totalDay = $currentStart->daysInMonth;
         $current = $currentStart->copy();
 
-        while ($current->lte($currentEnd)) {
+        while ($current <= $currentEnd) {
             if ($current->isSunday() || $current->isSaturday()) {
                 $weeksInLeave[] = $current->toString();
             }

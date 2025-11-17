@@ -1,6 +1,18 @@
 @extends('UserPanel/userindex')
 
 @section('content')
+@toastifyCss
+
+@if($delete=='yes')
+{{ toastify()->error('Your Record Remove was successful!') }}
+@endif
+
+@session("delete")
+{{ toastify()->error('Your Record Remove was successful!') }}
+@endsession
+
+@toastifyJs
+
 <div class="row" style="margin-left: 0px;margin-right: 5px;">
     @php
     $totalWorkHover = 0;
@@ -122,7 +134,12 @@
                 @endif
             </td>
             <td id="changetime">
-                {{$totalHover }}:{{ $totalMinute }}
+                {{$totalHover }} :
+                @if (strlen($totalMinute)==1)
+                0{{ $totalMinute }}
+                @else
+                {{ $totalMinute }}
+                @endif
             </td>
             <td>
                 <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
@@ -178,34 +195,14 @@
             $totalWorkMinute-=60;
             }
             @endphp
+            {{$totalHover }} :
+            @if (strlen($totalMinute)==1)
+            0{{ $totalMinute }}
+            @else
+            {{ $totalMinute }}
+            @endif
         </div>
         <div class="col-4" style="display: flex;justify-content: end;padding-right: 34px;">
-            @if (Auth::user()->roles=='HR')
-
-            <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
-                <span>Remove</span>
-            </a>
-            @endif
-        </div>
-        <div style="margin-top: 20px;margin-bottom: 10px;margin-left: 33px;">
-            Total Time :
-            <span id="changetime">
-                {{$totalHover }}:{{ $totalMinute }}
-            </span>
-            <br>
-            @if (Auth::user()->roles=='HR')
-            @foreach ($item->checkinoutdataget as $check)
-            <input type="text" name="" value="{{ $item->id }}" id="" hidden>
-            <input style="margin: 14px 12px 10px 12px;" onchange="checkintimesHR(this)" type="time" name="checkintime" value="{{ $check->check_in_time }}" id="checkintime">
-            <input type="text" name="id" id="checkid" value="{{ $check->id }}" hidden>
-            <input style="margin: 14px 12px 10px 12px;" onchange="checkouttimesHR(this)" type="time" name="checkouttime" value="{{ $check->check_out_time }}" id="checkouttime">
-            <input type="text" name="" value="{{ $item->id }}" id="" hidden>
-            <a href="/Check-Delete/{{ $check->id }}" style="margin-left: 312px;text-decoration: none;color:red">
-                <i class="fa-solid fa-trash"></i>
-            </a>
-            <br>
-            @endforeach
-            @endif
         </div>
     </div>
     @endforeach
@@ -217,7 +214,7 @@
         <h4 style="padding-left: 200px;">{{ $totalWorkHover }}:{{ $totalWorkMinute }}</h4>
     </div>
     <div style="margin: 20px 0px 30px 0px;background: white;width: 98%;display: flex;justify-content: space-around;">
-        <form action="{{ route('pdf.manage') }}" method="post">
+        <form action="{{ route('pdf.manage') }}" target="_blank" method="post">
             @csrf
             <input type="text" name="action" value="view" hidden id="">
             <input type="text" name="userid" value="{{ $userid }}" hidden id="">

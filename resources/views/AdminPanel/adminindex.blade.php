@@ -61,9 +61,16 @@
 <body class="bg-light">
     <nav class="navbar navbar-expand-lg bg-white" style="height: 85px;">
         <div class="container-fluid">
+            @if (Auth::user()->roles=='HR' || Auth::user()->roles=='Employee' )
+
+            <a class="navbar-brand text-primary" href="{{ route('user.Dashboard') }}" style="margin-left: 18px;">
+                <img style="height: 42px;" src="{{ asset('images/logo.png') }}" alt="">
+                TechSoft</a>
+            @else
             <a class="navbar-brand text-primary" href="{{ route('admin.dashbord') }}" style="margin-left: 18px;">
                 <img style="height: 42px;" src="{{ asset('images/logo.png') }}" alt="">
                 TechSoft</a>
+            @endif
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -127,7 +134,7 @@
                     HR
                 </a>
             </div>
-            @if (Auth::user()->email=='superadmin12@gmail.com')
+            @if (Auth::user()->roles=='Super Admin')
 
             <div style="padding:10px 25px;">
                 <a href="{{ route('superadmin.show.admin') }}" style="font-size: 18px;color: black;text-decoration: none;">

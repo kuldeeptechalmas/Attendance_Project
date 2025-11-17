@@ -1,4 +1,4 @@
-@extends('AdminPanel.adminindex')
+@extends('UserPanel/userindex')
 
 @section('content')
 

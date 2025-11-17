@@ -2,13 +2,16 @@
 
 @section('content')
 <div style="background: white;padding: 20px 262px 10px 240px;height: 435px;">
-    <h3>Add Attendance</h3>
+    <h3>Add Attendance
+        @if (Auth::user()->id==$userid)
+        in {{ Auth::user()->name }}
+        @endif</h3>
     <form action="{{ route('add.attendance.employee') }}" method="post">
         @csrf
         <input type="text" name="userid" value="{{ $userid }}" hidden id="">
         <div class="mb-3">
             <label class="form-label">Date</label>
-            <input type="date" name="date" min="{{ isset($employee->joinindate)?$employee->joinindate:'' }}" max="{{ isset($employee->exitdate)?$employee->exitdate:'' }}" value="{{ old('date') }}" class="form-control">
+            <input type="date" name="date" min="{{ isset($employee->joinindate)?$employee->joinindate:'' }}" max="{{ isset($employee->exitdate)?$employee->exitdate:now()->toDateString() }}" value="{{ old('date',now()->toDateString()) }}" class="form-control">
         </div>
         @error("date")
         <div class="alert alert-danger errordiv" role="alert">
