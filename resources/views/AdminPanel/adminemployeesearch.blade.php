@@ -12,7 +12,7 @@
 
     <h3 style="text-align: center;">Employees</h3>
 
-    <form class="d-flex" style="width: 40%;margin-left: 57%;margin-top: 23px;" role="search" action="{{ route('admin.employee.manage') }}" method="post">
+    <form class="d-flex" style="width: 40%;margin-left: 57%;margin-top: 23px;" role="search" action="{{ route('admin.employee.search') }}" method="post">
         @csrf
         <input type="text" name="action" value="Search" id="" hidden>
         <input class="form-control me-2" name="searchdata" value="{{ old('searchdata',$input_search) }}" type="search" placeholder="Search" aria-label="Search" />
@@ -45,14 +45,14 @@
     </tr>
     @endforeach
 </table>
-<div class="row" style="margin: 0px;background: white;padding-top: 20px;margin-bottom: 20px;">
+{{-- <div class="row" style="margin: 0px;background: white;padding-top: 20px;margin-bottom: 20px;">
     <div class="col-5">
         {{ $data->currentPage() }} of {{ $data->lastPage() }} in {{ $data->count() }}
-    </div>
-    <div class="col-7">
-        {{$data->links('pagination::bootstrap-4') }}
-    </div>
 </div>
+<div class="col-7">
+    {{$data->links('pagination::bootstrap-4') }}
+</div>
+</div> --}}
 @else
 <div style="display: flex;justify-content: center;font-size: 22px;margin-top: 190px;">
     <div style="background: white;width: 200px;display: flex;justify-content: center;">

@@ -131,7 +131,7 @@
         @enderror
 
         <div class="text-center py-5" style="display: flex;justify-content: space-between;">
-            <a href="{{ route('admin.dashbord') }}">
+            <a href="{{ route('user.Dashboard') }}">
                 <button type="button" class="btn btn-secondary">Back</button>
             </a>
             <button type="submit" class="btn btn-primary">Add User</button>

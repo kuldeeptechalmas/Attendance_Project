@@ -83,60 +83,6 @@ class AttendanceController extends Controller
         $find_employee = User::find($request->userid);
         return view('UserPanel.addattendance', ['userid' => $request->userid, 'employee' => $find_employee]);
     }
-    // Check In
-    public function Attendance_Check_IN(Request $request)
-    {
-        $Now_Date = now()->toDateString();
-
-        $Exist_Attendance = Attendance::where("date", $Now_Date)->where("user_id", Auth::user()->id)->first();
-
-        if (isset($Exist_Attendance)) {
-
-            $Checkinout = new CheckInOut();
-            $Checkinout->check_in_time = now();
-            $Checkinout->check_out_time = '';
-            $Checkinout->attandance_id = $Exist_Attendance->id;
-            $Checkinout->save();
-        } else {
-            $Today = new Attendance();
-            $Today->user_id = Auth::user()->id;
-            $Today->date = $Now_Date;
-            $Today->save();
-
-            $Checkinout = new CheckInOut();
-            $Checkinout->check_in_time = now();
-            $Checkinout->check_out_time = '';
-            $Checkinout->attandance_id = $Today->id;
-            $Checkinout->save();
-        }
-
-
-        Session::put("checkin", "done");
-
-        return redirect()->route("user.Dashboard");
-    }
-
-    // Check Out
-    public function Attendance_Check_OUT(Request $request)
-    {
-        $Now_Date = now()->toDateString();
-        $Now_Time = now()->toTimeString();
-
-        $Find_Attendace_Record = Attendance::where('date', $Now_Date)
-            ->where('user_id', Auth::user()->id)->first();
-
-        $checkinout = CheckInOut::where("attandance_id", $Find_Attendace_Record->id)
-            ->orderByDesc("created_at")
-            ->first();
-
-        $checkinout->check_out_time = now();
-        $checkinout->save();
-
-
-        Session::forget("checkin");
-
-        return redirect()->route("user.Dashboard");
-    }
 
     // Today Attendance Delete
     public function Today_Attandance_Delete($attendanceid, Request $request)
@@ -270,7 +216,7 @@ class AttendanceController extends Controller
 
         $Find_Check_Data = CheckInOut::find($request->checkid);
         $find_attendance = Attendance::find($Find_Check_Data->attandance_id);
-        
+
         $userid = $find_attendance->user_id;
         $date = $find_attendance->date;
         $months = now()->createFromDate($date)->month;

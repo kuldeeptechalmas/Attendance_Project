@@ -134,6 +134,7 @@ class MainController extends Controller
     {
         Auth::logout();
         Session::forget("checkin");
+        Session::forget("searchdata");
         return redirect()->route("login");
     }
 

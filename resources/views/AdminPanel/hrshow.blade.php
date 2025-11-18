@@ -9,7 +9,15 @@
 @toastifyJs
 
 @if ($data->isNotEmpty())
-<h3 style="background: white;text-align: center;">HRs</h3>
+<div style="background: white;">
+    <h3 style="text-align: center;">HRs</h3>
+    <form class="d-flex" style="width: 40%;margin-left: 57%;margin-top: 23px;" role="search" action="{{ route('admin.hr.manage') }}" method="post">
+        @csrf
+        <input type="text" name="action" value="Search" id="" hidden>
+        <input class="form-control me-2" name="searchdata" value="{{ isset($input_search)?$input_search:'' }}" type="search" placeholder="Search" aria-label="Search" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
+</div>
 <table class="table table-hover">
     <tr>
         <td>Name</td>

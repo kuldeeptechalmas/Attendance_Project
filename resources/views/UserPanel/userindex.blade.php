@@ -24,7 +24,7 @@
             </button>
             <div class="collapse navbar-collapse" style="position: relative;" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <h1><button class="btn btn-primary" id="maindiv" onclick="demofun()">Just Test</button></h1>
+                    {{-- <h1><button class="btn btn-primary" id="maindiv" onclick="demofun()">Just Test</button></h1> --}}
                 </ul>
                 <div id="showdivples" style="position: absolute;top: 105%;width: 26%;background: wheat;display: none;">
                     Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
@@ -281,51 +281,6 @@
                 myDiv.style.display = 'none';
             }
         });
-
-        function checkintimes(e) {
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-                , type: "post"
-                , url: "{{ route('checkin.time.change') }}"
-                , data: {
-                    checkinid: $($(e).next()[0]).val()
-                    , checkintime: $(e).val()
-                    , attendanceid: $($(e).prev()[0]).val()
-                }
-                , success: function(res) {
-
-                    $("#changetime").html(res['hover'] + ":" + res['minute'])
-                }
-                , error: function() {
-
-                }
-            });
-        }
-
-        function checkouttimes(e) {
-
-            $.ajax({
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-                , type: "post"
-                , url: "{{ route('checkout.time.change') }}"
-                , data: {
-                    checkinid: $($(e).prev()[0]).val()
-                    , checkouttime: $(e).val()
-                    , attendanceid: $($(e).next()[0]).val()
-                }
-                , success: function(res) {
-                    $("#changetime").html(res['hover'] + ":" + res['minute'])
-                }
-                , error: function() {
-
-                }
-            });
-        }
 
     </script>
 </body>

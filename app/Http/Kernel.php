@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\AdminAuthCheck;
+use App\Http\Middleware\AuthCheck;
 use App\Http\Middleware\HRAuthCheck;
 use App\Http\Middleware\SuperAdminAuthCheck;
 use App\Http\Middleware\User_Auth_Check;
@@ -72,5 +73,6 @@ class Kernel extends HttpKernel
         "AdminAuthCheck" => AdminAuthCheck::class,
         "HRAuthCheck" => HRAuthCheck::class,
         "SuperAdminAuthCheck" => SuperAdminAuthCheck::class,
+        "AuthCheck" => AuthCheck::class,
     ];
 }

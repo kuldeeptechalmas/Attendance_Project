@@ -26,6 +26,11 @@ Route::get('/Logout-User', [MainController::class, 'User_Logout'])->name('user.l
 Route::match(['get', 'post'], '/Forget-Email-Check', [MainController::class, 'User_Forgot_Email_Check'])->name('user.forget.email.check');
 Route::match(['get', 'post'], '/Forget-Password', [MainController::class, 'User_Forgot_Password'])->name('user.forget.password');
 
+Route::middleware('AuthCheck')->group(function () {
+    Route::get('/Dashbord-User', [UserController::class, 'User_Dashboard'])->name('user.Dashboard');
+    Route::match(['get', 'post'], '/User-Profile', [UserController::class, 'User_Profile'])->name('user.profile');
+});
+
 Route::middleware('SuperAdminAuthCheck')->group(function () {
     Route::get('/SuperAdmin-Admin', [AdminController::class, 'SuperAdmin_Show_Admin'])->name('superadmin.show.admin');
     Route::get('/SuperAdmin-Admin/{adminid}', [AdminController::class, 'SuperAdmin_Find_Admin'])->name('superadmin.find.admin');
@@ -43,7 +48,7 @@ Route::middleware('AdminAuthCheck')->group(function () {
     Route::post('/Admin-Employee-Modify', [AdminController::class, 'Admin_Modify_Employee'])->name('admin.modify.employee');
 
     // HR Manage
-    Route::get('/Admin-HR', [AdminController::class, 'Admin_Hr_Manage'])->name('admin.hr.manage');
+    Route::match(['get', 'post'], '/Admin-HR', [AdminController::class, 'Admin_Hr_Manage'])->name('admin.hr.manage');
     Route::get('/Admin-HR/{id}', [AdminController::class, 'Admin_Find_Hr'])->name('admin.find.hr');
     Route::post('/Admin-HR-Modify', [AdminController::class, 'Admin_Modify_Hr'])->name('admin.modify.hr');
 
@@ -51,18 +56,21 @@ Route::middleware('AdminAuthCheck')->group(function () {
     Route::match(['get', 'post'], '/Admin-Add', [AdminController::class, 'Admin_Add_Employee_HR'])->name('admin.add');
 });
 
-Route::get('/Dashbord-User', [UserController::class, 'User_Dashboard'])->name('user.Dashboard');
-Route::match(['get', 'post'], '/User-Profile', [UserController::class, 'User_Profile'])->name('user.profile');
+
+
+// HR Routes
+Route::middleware("HRAuthCheck")->group(function () {
+    Route::match(['get', 'post'], '/Employees', [UserController::class, 'HR_get_Employee_Data'])->name('hrget.employee.data');
+    Route::match(['get', 'post'], '/Employees/{id}', [UserController::class, 'HR_Modify_Employee_Details'])->name('hrget.employee.data.id');
+    Route::match(['get', 'post'], '/Employees-Modify', [UserController::class, 'Employee_Data_Modify'])->name('employee.data.modify');
+});
 
 // User Route
 Route::middleware('UserAuthCheck')->group(function () {
 
     // Attendance Route
-
     Route::match(['get', 'post'], '/Attendance-Employee', [AttendanceController::class, 'Add_Attendance_Employee'])->name('add.attendance.employee');
 
-    Route::get('/Attendance-CheckIn', [AttendanceController::class, "Attendance_Check_IN"])->name('attendance.checkin');
-    Route::get('/Attendance-CheckOut', [AttendanceController::class, "Attendance_Check_OUT"])->name('attendance.checkout');
     Route::match(['get', 'post'], '/Attendance-Delete/{attendkid}', [AttendanceController::class, 'Today_Attandance_Delete'])->name('attendance.today.delete');
     Route::match(['get', 'post'], '/Month-Attendance/{empid}', [UserController::class, 'Monthly_Data_For_Employee_Find'])->name('month.attendance');
     Route::match(['get', 'post'], '/Month-AttendanceData/{month}/{year}', [UserController::class, 'Monthly_Data_For_Employee_Show'])->name('month.attendance.show');
@@ -77,11 +85,4 @@ Route::middleware('UserAuthCheck')->group(function () {
 
     // Teams
     Route::match(['get', 'post'], '/Teams', [UserController::class, 'Teams'])->name('teams');
-});
-
-// HR Routes
-Route::middleware("HRAuthCheck")->group(function () {
-    Route::match(['get', 'post'], '/Employees', [UserController::class, 'HR_get_Employee_Data'])->name('hrget.employee.data');
-    Route::match(['get', 'post'], '/Employees/{id}', [UserController::class, 'HR_Modify_Employee_Details'])->name('hrget.employee.data.id');
-    Route::match(['get', 'post'], '/Employees-Modify', [UserController::class, 'Employee_Data_Modify'])->name('employee.data.modify');
 });

@@ -6,27 +6,13 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class AdminController extends Controller
 {
-    // Admin Dashborad
-    public function Admin_Dashborad()
-    {
-        $Count_Employee = User::where('roles', 'Employee')->get();
-        $Count_Hr = User::where('roles', 'HR')->get();
-        $Count_Admin = User::where('roles', 'Admin')->get();
-
-        return view('AdminPanel.adminindex', [
-            'dashboard' => 'yes',
-            'countemployee' => $Count_Employee->count(),
-            'counthr' => $Count_Hr->count(),
-            'countadmin' => $Count_Admin->count(),
-        ]);
-    }
-
     // Admin Profile
     public function Admin_Profile(Request $request)
     {
@@ -94,16 +80,41 @@ class AdminController extends Controller
     // Admin Manage Employee
     public function Admin_Employee_Manage(Request $request)
     {
-        if ($request->action == 'Remove') {
-            $find_user = User::find($request->id);
-            if (isset($find_user)) {
-                $find_user->delete();
-                return redirect()->back()->with(["delete" => "yes"]);
+        $user_Employee = User::where('roles', 'Employee')->paginate(10);
+        $input_search = '';
+        if ($request->isMethod('post')) {
+            if ($request->action == 'Search') {
+                if ($request->searchdata != null) {
+                    // dd($request->searchdata);
+                    Session::put('searchdata', $request->searchdata);
+                    $user_Employee = User::where('roles', 'Employee')
+                        ->where('name', 'like', "%" . $request->searchdata . "%")
+                        ->orWhere('email', 'like', "%" . $request->searchdata . "%")
+                        ->paginate(10);
+                    $input_search = $request->searchdata;
+                } else {
+                    Session::forget('searchdata');
+                }
+            }
+            if ($request->action == 'Remove') {
+                $find_user = User::find($request->id);
+                if (isset($find_user)) {
+                    $find_user->delete();
+                    return redirect()->back()->with(["delete" => "yes"]);
+                }
             }
         }
-        $user_Employee = User::where('roles', 'Employee')->paginate(10);
+
+        if (Session::get('searchdata')) {
+            $input_search = Session::get('searchdata');
+            $user_Employee = User::where('roles', 'Employee')
+                ->where('name', 'like', "%" . $input_search . "%")
+                ->orWhere('email', 'like', "%" . $input_search . "%")
+                ->paginate(10);
+        }
+
         if (isset($user_Employee)) {
-            return view('AdminPanel.employeeshow', ['data' => $user_Employee]);
+            return view('AdminPanel.employeeshow', ['data' => $user_Employee, 'input_search' => $input_search]);
         } else {
             return redirect()->back()->with("error", "Not Found Data");
         }
@@ -185,8 +196,20 @@ class AdminController extends Controller
     public function Admin_Hr_Manage(Request $request)
     {
         $hr_Employee = User::where('roles', 'HR')->paginate(10);
+        $input_search = '';
+        if ($request->isMethod('post')) {
+            if ($request->action == 'Search') {
+                if ($request->searchdata != null) {
+                    $hr_Employee = User::where('roles', 'HR')
+                        ->where('name', 'like', "%" . $request->searchdata . "%")
+                        ->orWhere('email', 'like', "%" . $request->searchdata . "%")
+                        ->paginate(10);
+                    $input_search = $request->searchdata;
+                }
+            }
+        }
         if (isset($hr_Employee)) {
-            return view('AdminPanel.hrshow', ['data' => $hr_Employee]);
+            return view('AdminPanel.hrshow', ['data' => $hr_Employee, 'input_search' => $input_search]);
         } else {
             return redirect()->back()->with("error", "Not Found Data");
         }

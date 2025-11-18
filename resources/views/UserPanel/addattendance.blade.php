@@ -4,7 +4,7 @@
 <div style="background: white;padding: 20px 262px 10px 240px;height: 435px;">
     <h3>Add Attendance
         @if (Auth::user()->id==$userid)
-        in {{ Auth::user()->name }}
+        in {{ Auth::user()->roles }}
         @endif</h3>
     <form action="{{ route('add.attendance.employee') }}" method="post">
         @csrf

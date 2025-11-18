@@ -59,8 +59,31 @@ class UserController extends Controller
     public function HR_get_Employee_Data(Request $request)
     {
         $Get_all_Employee = User::where('roles', 'Employee')->paginate(10);
+        $input_search = '';
+        if ($request->isMethod('post')) {
+            if ($request->action == 'Search') {
+                if ($request->searchdata != null) {
+                    // dd($request->searchdata);
+                    Session::put('searchdata', $request->searchdata);
+                    $Get_all_Employee = User::where('roles', 'Employee')
+                        ->where('name', 'like', "%" . $request->searchdata . "%")
+                        ->orWhere('email', 'like', "%" . $request->searchdata . "%")
+                        ->paginate(10);
+                    $input_search = $request->searchdata;
+                } else {
+                    Session::forget('searchdata');
+                }
+            }
+        }
+        if (Session::get('searchdata')) {
+            $input_search = Session::get('searchdata');
+            $Get_all_Employee = User::where('roles', 'Employee')
+                ->where('name', 'like', "%" . $input_search . "%")
+                ->orWhere('email', 'like', "%" . $input_search . "%")
+                ->paginate(10);
+        }
         if (isset($Get_all_Employee)) {
-            return view("UserPanel.HR.hrgetemployee", ['employeedata' => $Get_all_Employee]);
+            return view("UserPanel.HR.hrgetemployee", ['employeedata' => $Get_all_Employee, 'input_search' => $input_search]);
         } else {
             return redirect()->back()->with('error', 'not found record');
         }
@@ -174,7 +197,9 @@ class UserController extends Controller
                 return redirect()->back()->withInput()->withErrors($validators);
             }
 
+
             $Find_User = User::find(Auth::user()->id);
+            $old_roles = $Find_User->roles;
             $Find_User->name = $request->name;
             $Find_User->phoneno = $request->phoneno;
             $Find_User->roles = $request->roles;
@@ -183,7 +208,12 @@ class UserController extends Controller
             $Find_User->save();
 
             Auth::login($Find_User);
-            return redirect()->back()->with(["update" => "yes"]);
+            if ($Find_User->email == 'superadmin12@gmail.com' && $old_roles != $request->roles) {
+                // dd($Find_User);
+                return redirect()->route('user.Dashboard');
+            } else {
+                return redirect()->back()->with(['update' => 'yes']);
+            }
         }
         return view("UserPanel.userprofile");
     }

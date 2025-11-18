@@ -2,8 +2,18 @@
 
 @section("content")
 @if (isset($employeedata))
-<div>
-    <h5>Employees </h5>
+@if ($employeedata->isNotEmpty())
+
+<div style="background: white;margin-bottom: 10px;">
+
+    <h5>Employees</h5>
+
+    <form class="d-flex" style="width: 40%;margin-left: 57%;padding-bottom: 17px;" role="search" action="{{ route('hrget.employee.data') }}" method="post">
+        @csrf
+        <input type="text" name="action" value="Search" id="" hidden>
+        <input class="form-control me-2" name="searchdata" value="{{ isset($input_search)?$input_search:'' }}" type="search" placeholder="Search" aria-label="Search" />
+        <button class="btn btn-outline-success" type="submit">Search</button>
+    </form>
 </div>
 <table class="table table-white table-hover">
     <tr style="height: 61px;">
@@ -27,10 +37,6 @@
             </a>
         </td>
         <td>
-            {{-- <form action="{{ route('month.attendance') }}" method="post">
-            @csrf
-            <input type="text" name="id" value="{{ $item->id }}" hidden>
-            </form> --}}
             <a href="/Month-Attendance/{{ $item->id }}">
 
                 <input type="button" class="btn btn-info" value="Attendance">
@@ -53,5 +59,13 @@
         {{$employeedata->links('pagination::bootstrap-4') }}
     </div>
 </div>
+@else
+<div style="display: flex;justify-content: center;font-size: 22px;margin-top: 190px;">
+    <div style="background: white;width: 200px;display: flex;justify-content: center;">
+        Not Found Data
+    </div>
+</div>
+@endif
+
 @endif
 @endsection
