@@ -1,7 +1,7 @@
 @extends('UserPanel.userindex')
 
 @section('content')
-<div style="background: white;padding: 20px 262px 10px 240px;height: 435px;">
+<div style="background: white;padding: 20px 262px 10px 240px;min-height: 435px;">
     <h3>Add Attendance
         @if (Auth::user()->id==$userid)
         in {{ Auth::user()->roles }}

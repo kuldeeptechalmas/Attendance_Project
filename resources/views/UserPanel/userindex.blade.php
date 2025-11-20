@@ -69,7 +69,7 @@
     </nav>
 
     <div class="row mt-3">
-        <div class="col-3 bg-white" style="height: 435px;">
+        <div class="col-3 bg-white" style="min-height: 435px;">
             <h5 style="margin: 25px;">
                 Hi, 👋 <br>
                 Welcome To <br>
@@ -273,14 +273,6 @@
             , }));
 
         }
-
-        const myDiv = document.getElementById('showdivples');
-        const myDivmain = document.getElementById('maindiv');
-        document.addEventListener('click', function(event) {
-            if (!myDiv.contains(event.target) && event.target !== myDiv && event.target !== myDivmain) {
-                myDiv.style.display = 'none';
-            }
-        });
 
     </script>
 </body>

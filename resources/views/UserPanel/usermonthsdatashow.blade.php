@@ -55,9 +55,9 @@
             $totalBreakMinute = 0;
 
             @endphp
+
             @foreach ($item->checkinoutdataget as $check)
             @if ($check->check_out_time!='00:00:00')
-
             @php
 
             $time1 = now()::parse($check->check_in_time);
@@ -72,11 +72,9 @@
             $totalMinute-=60;
             }
             @endphp
+
             @if ($check->break!=null)
-
-
             @php
-
             $time1 = now()::parse($check->check_in_time);
             $time2 = now()::parse($check->check_out_time);
             $diffrence = $time1->diff($time2);
@@ -89,22 +87,25 @@
             $totalBreakMinute-=60;
             }
             @endphp
+
             @endif
             @endif
             @endforeach
+
             @php
             $index+=1;
             $totalHover-=$totalBreakHover;
             $totalMinute-=$totalBreakMinute;
-
             $totalWorkHover+=$totalHover;
             $totalWorkMinute+=$totalMinute;
+
             if($totalWorkMinute>=60)
             {
             $totalWorkHover+=1;
             $totalWorkMinute-=60;
             }
             @endphp
+
             <td>{{ $item->date }}</td>
             <td id="maintd" class="d-flex w-100 flex-column">
                 @if ($item->checkinoutdataget->isNotEmpty())
@@ -124,9 +125,6 @@
                         <input type="text" name="checkid" value="{{ $check->id }}" hidden id="">
                         <button type="submit"><i class="fa-solid fa-trash"></i></button>
                     </form>
-                    {{-- <a href="/Check-Delete/{{ $check->id }}" style="margin-top: 17px;margin-left: 38px;text-decoration: none;color:red">
-
-                    </a> --}}
                 </div>
                 @endforeach
                 @else
@@ -143,7 +141,7 @@
             </td>
             <td>
                 <a href="/Attendance-Delete/{{ $item->id }}" style="color:red;text-decoration: none;">
-                    <span>Remove</span>
+                    <button class="btn btn-danger">Remove</button>
                 </a>
             </td>
         </tr>
@@ -211,7 +209,7 @@
     <div style="margin: 20px 0px 30px 0px;background: white;width: 98%;display: flex;">
         <div>Total Hourse :</div>
 
-        <h4 style="padding-left: 200px;">{{ $totalWorkHover }}:{{ $totalWorkMinute }}</h4>
+        <h4 style="padding-left: 200px;"><span id="thours">{{ $totalWorkHover }}</span>: <span id="tminute">{{ $totalWorkMinute }}</span></h4>
     </div>
     <div style="margin: 20px 0px 30px 0px;background: white;width: 98%;display: flex;justify-content: space-around;">
         <form action="{{ route('pdf.manage') }}" target="_blank" method="post">
@@ -221,8 +219,8 @@
             <input type="text" name="month" value="{{ $month }}" hidden id="">
             <input type="text" name="year" value="{{ $year }}" hidden id="">
             <input type="text" name="day" value="{{ count($data) }}" hidden id="">
-            <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="" hidden>
-            <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="" hidden>
+            <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="formhourse" hidden>
+            <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="formminute" hidden>
             <input type="submit" class="btn btn-primary" value="View Slip">
         </form>
         <form action="{{ route('pdf.manage') }}" method="post">
@@ -231,8 +229,8 @@
             <input type="text" name="month" value="{{ $month }}" hidden id="">
             <input type="text" name="userid" value="{{ $userid }}" hidden id="">
             <input type="text" name="day" value="{{ count($data) }}" hidden id="">
-            <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="" hidden>
-            <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="" hidden>
+            <input type="text" name="hourse" value="{{ $totalWorkHover }}" id="formhourse" hidden>
+            <input type="text" name="minutes" value="{{ $totalWorkMinute }}" id="formminute" hidden>
             <input type="submit" class="btn btn-primary" value="Download Slip">
         </form>
     </div>
@@ -252,7 +250,29 @@
                 , attendanceid: $($(e).prev()[0]).val()
             }
             , success: function(res) {
-                // $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+
+                const totalhours = $("#thours").html();
+                const totalminute = $("#tminute").html();
+
+                const oldhours = $(e).parent().parent().next().html().split(':')[0];
+                const oldminute = $(e).parent().parent().next().html().split(':')[1];
+
+                var newtotalhours = (totalhours - oldhours) + res['hover'];
+                var newtotalminute = (totalminute - oldminute) + res['minute'];
+
+                if (newtotalminute <= 0) {
+                    newtotalhours -= 1;
+                    newtotalminute += 60;
+                }
+                if (newtotalminute > 59) {
+                    newtotalhours += 1;
+                    newtotalminute -= 60;
+                }
+
+                $("#thours").html(newtotalhours);
+                $("#tminute").html(newtotalminute);
+                $('#formhourse').val(newtotalhours);
+                $('#formminute').val(newtotalminute);
                 $(e).parent().parent().next().html(res['hover'] + ":" + res['minute']);
             }
             , error: function() {
@@ -275,7 +295,28 @@
                 , attendanceid: $($(e).next()[0]).val()
             }
             , success: function(res) {
-                // $($(e).parent().find("#changetime").html(res['hover'] + ":" + res['minute']));
+
+                const totalhours = $("#thours").html();
+                const totalminute = $("#tminute").html();
+                const oldhours = $(e).parent().parent().next().html().split(':')[0];
+                const oldminute = $(e).parent().parent().next().html().split(':')[1];
+                let newtotalhours = totalhours - oldhours + res['hover'];
+                let newtotalminute = totalminute - oldminute + res['minute'];
+
+                if (newtotalminute <= 0) {
+                    newtotalhours -= 1;
+                    newtotalminute += 60;
+                }
+                if (newtotalminute > 59) {
+                    newtotalhours += 1;
+                    newtotalminute -= 60;
+                }
+
+                $("#thours").html(newtotalhours);
+                $("#tminute").html(newtotalminute);
+                $('#formhourse').val(newtotalhours);
+                $('#formminute').val(newtotalminute);
+
                 $(e).parent().parent().next().html(res['hover'] + ":" + res['minute']);
             }
             , error: function() {

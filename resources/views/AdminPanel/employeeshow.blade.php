@@ -7,7 +7,6 @@
 @endsession
 @toastifyJs
 
-@if ($data->isNotEmpty())
 <div style="background: white;">
 
     <h3 style="text-align: center;">Employees</h3>
@@ -19,6 +18,7 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 </div>
+@if ($data->isNotEmpty())
 <table class="table table-hover">
     <tr>
         <td>Name</td>

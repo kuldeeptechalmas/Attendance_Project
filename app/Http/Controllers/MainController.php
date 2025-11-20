@@ -88,10 +88,10 @@ class MainController extends Controller
                 "name.required" => "Enter Name is Required",
                 "name.not_regex" => "Not Only Number is Required",
 
-                "phoneno.required" => "Enter Phone No is Required",
+                "phoneno.required" => "Enter Phone No. is Required",
                 "phoneno.numeric" => "Enter Only Number is Required",
-                "phoneno.digits" => "Enter 10 Digit Phone No is Required",
-                "phoneno.unique" => "Enter Phone No has Already Been Taken.",
+                "phoneno.digits" => "Enter 10 Digit Phone No. is Required",
+                "phoneno.unique" => "Enter Phone No. has Already Been Taken.",
 
                 "email.required" => "Enter Email is Required",
                 "email.unique" => "Enter Email has Already Been Taken.",

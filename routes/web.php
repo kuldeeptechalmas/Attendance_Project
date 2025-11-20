@@ -19,12 +19,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Main Route
-Route::redirect('/', '/Login',);
-Route::match(['get', 'post'], "/Login", [MainController::class, 'Login_User'])->name("login");
-Route::match(['get', 'post'], "/Registration", [MainController::class, 'Registration_User'])->name("registration");
+Route::middleware('AuthThendashboard')->group(function () {
+
+    Route::redirect('/', '/Login',);
+    Route::match(['get', 'post'], "/Login", [MainController::class, 'Login_User'])->name("login");
+    Route::match(['get', 'post'], "/Registration", [MainController::class, 'Registration_User'])->name("registration");
+    Route::match(['get', 'post'], '/Forget-Email-Check', [MainController::class, 'User_Forgot_Email_Check'])->name('user.forget.email.check');
+    Route::match(['get', 'post'], '/Forget-Password', [MainController::class, 'User_Forgot_Password'])->name('user.forget.password');
+});
 Route::get('/Logout-User', [MainController::class, 'User_Logout'])->name('user.logout');
-Route::match(['get', 'post'], '/Forget-Email-Check', [MainController::class, 'User_Forgot_Email_Check'])->name('user.forget.email.check');
-Route::match(['get', 'post'], '/Forget-Password', [MainController::class, 'User_Forgot_Password'])->name('user.forget.password');
 
 Route::middleware('AuthCheck')->group(function () {
     Route::get('/Dashbord-User', [UserController::class, 'User_Dashboard'])->name('user.Dashboard');

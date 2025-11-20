@@ -2,7 +2,6 @@
 
 @section("content")
 @if (isset($employeedata))
-@if ($employeedata->isNotEmpty())
 
 <div style="background: white;margin-bottom: 10px;">
 
@@ -15,6 +14,7 @@
         <button class="btn btn-outline-success" type="submit">Search</button>
     </form>
 </div>
+@if ($employeedata->isNotEmpty())
 <table class="table table-white table-hover">
     <tr style="height: 61px;">
         <td>Name</td>
